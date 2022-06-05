@@ -1,4 +1,4 @@
-name: Release "Discord Bot" container
+name: Release containers
 
 on:
   push:
@@ -9,6 +9,9 @@ on:
 
 jobs:
   docker:
+    strategy:
+      matrix:
+        application: ['bot', 'discordbot']
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -20,7 +23,7 @@ jobs:
         with:
           # List of Docker imges to use as base name for tags
           images: |
-            ghcr.io/botivater/discordbot
+            ghcr.io/botivater/${{ matrix.application }}
           # Generate Docker tags based on the following events/attributes
           tags: |
             type=ref,event=branch
@@ -50,4 +53,4 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: |
-            APP=discordbot
+            APP=${{ matrix.application }}
