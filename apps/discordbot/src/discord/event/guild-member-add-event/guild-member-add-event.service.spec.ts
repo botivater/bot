@@ -9,7 +9,9 @@ describe('GuildMemberAddEventService', () => {
       providers: [GuildMemberAddEventService],
     }).compile();
 
-    service = module.get<GuildMemberAddEventService>(GuildMemberAddEventService);
+    service = module.get<GuildMemberAddEventService>(
+      GuildMemberAddEventService,
+    );
   });
 
   it('should be defined', () => {

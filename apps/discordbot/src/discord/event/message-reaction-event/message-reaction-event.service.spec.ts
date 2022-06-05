@@ -9,7 +9,9 @@ describe('MessageReactionEventService', () => {
       providers: [MessageReactionEventService],
     }).compile();
 
-    service = module.get<MessageReactionEventService>(MessageReactionEventService);
+    service = module.get<MessageReactionEventService>(
+      MessageReactionEventService,
+    );
   });
 
   it('should be defined', () => {

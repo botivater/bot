@@ -9,7 +9,9 @@ describe('SystemMessageChannelService', () => {
       providers: [SystemMessageChannelService],
     }).compile();
 
-    service = module.get<SystemMessageChannelService>(SystemMessageChannelService);
+    service = module.get<SystemMessageChannelService>(
+      SystemMessageChannelService,
+    );
   });
 
   it('should be defined', () => {

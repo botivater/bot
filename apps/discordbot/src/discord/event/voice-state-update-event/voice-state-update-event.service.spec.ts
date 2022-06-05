@@ -9,7 +9,9 @@ describe('VoiceStateUpdateEventService', () => {
       providers: [VoiceStateUpdateEventService],
     }).compile();
 
-    service = module.get<VoiceStateUpdateEventService>(VoiceStateUpdateEventService);
+    service = module.get<VoiceStateUpdateEventService>(
+      VoiceStateUpdateEventService,
+    );
   });
 
   it('should be defined', () => {

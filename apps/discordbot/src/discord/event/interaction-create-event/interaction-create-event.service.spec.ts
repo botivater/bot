@@ -9,7 +9,9 @@ describe('InteractionCreateEventService', () => {
       providers: [InteractionCreateEventService],
     }).compile();
 
-    service = module.get<InteractionCreateEventService>(InteractionCreateEventService);
+    service = module.get<InteractionCreateEventService>(
+      InteractionCreateEventService,
+    );
   });
 
   it('should be defined', () => {

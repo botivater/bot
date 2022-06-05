@@ -9,7 +9,9 @@ describe('RemoveRoleBuildingBlockService', () => {
       providers: [RemoveRoleBuildingBlockService],
     }).compile();
 
-    service = module.get<RemoveRoleBuildingBlockService>(RemoveRoleBuildingBlockService);
+    service = module.get<RemoveRoleBuildingBlockService>(
+      RemoveRoleBuildingBlockService,
+    );
   });
 
   it('should be defined', () => {

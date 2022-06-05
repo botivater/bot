@@ -9,7 +9,9 @@ describe('SendMessageBuildingBlockService', () => {
       providers: [SendMessageBuildingBlockService],
     }).compile();
 
-    service = module.get<SendMessageBuildingBlockService>(SendMessageBuildingBlockService);
+    service = module.get<SendMessageBuildingBlockService>(
+      SendMessageBuildingBlockService,
+    );
   });
 
   it('should be defined', () => {

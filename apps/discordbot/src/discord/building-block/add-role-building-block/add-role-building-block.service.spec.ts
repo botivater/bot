@@ -9,7 +9,9 @@ describe('AddRoleBuildingBlockService', () => {
       providers: [AddRoleBuildingBlockService],
     }).compile();
 
-    service = module.get<AddRoleBuildingBlockService>(AddRoleBuildingBlockService);
+    service = module.get<AddRoleBuildingBlockService>(
+      AddRoleBuildingBlockService,
+    );
   });
 
   it('should be defined', () => {

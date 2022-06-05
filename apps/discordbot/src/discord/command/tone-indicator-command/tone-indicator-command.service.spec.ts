@@ -9,7 +9,9 @@ describe('ToneIndicatorCommandService', () => {
       providers: [ToneIndicatorCommandService],
     }).compile();
 
-    service = module.get<ToneIndicatorCommandService>(ToneIndicatorCommandService);
+    service = module.get<ToneIndicatorCommandService>(
+      ToneIndicatorCommandService,
+    );
   });
 
   it('should be defined', () => {

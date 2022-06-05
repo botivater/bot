@@ -9,7 +9,9 @@ describe('RecreateFlowsCommandService', () => {
       providers: [RecreateFlowsCommandService],
     }).compile();
 
-    service = module.get<RecreateFlowsCommandService>(RecreateFlowsCommandService);
+    service = module.get<RecreateFlowsCommandService>(
+      RecreateFlowsCommandService,
+    );
   });
 
   it('should be defined', () => {
