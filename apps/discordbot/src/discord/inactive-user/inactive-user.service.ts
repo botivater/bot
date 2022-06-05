@@ -63,7 +63,9 @@ export class InactiveUserService {
             `Following users are inactive for more than ${
               databaseGuild.guildConfig.inactivityCheckConfig
                 .inactiveUserSeconds
-            } seconds: [${databaseGuildMembers.map(
+            } seconds in guild ${databaseGuild.name} (${
+              databaseGuild.snowflake
+            }): [${databaseGuildMembers.map(
               (v) => `${v.name} (${v.identifier})`,
             )}]`,
           );
