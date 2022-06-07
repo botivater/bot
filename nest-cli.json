@@ -6,7 +6,9 @@
   "root": "apps/bot",
   "compilerOptions": {
     "webpack": true,
-    "tsConfigPath": "apps/bot/tsconfig.app.json"
+    "tsConfigPath": "apps/bot/tsconfig.app.json",
+    "watchAssets": true,
+    "assets": ["**/*.proto"]
   },
   "projects": {
     "bot": {
@@ -34,6 +36,15 @@
       "sourceRoot": "libs/common/src",
       "compilerOptions": {
         "tsConfigPath": "libs/common/tsconfig.lib.json"
+      }
+    },
+    "api": {
+      "type": "application",
+      "root": "apps/api",
+      "entryFile": "main",
+      "sourceRoot": "apps/api/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/api/tsconfig.app.json"
       }
     }
   }

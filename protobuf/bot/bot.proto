@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package bot;
+
+service BotService {
+    rpc LoadAllGuildsCommands (LoadAllGuildsCommandsRequest) returns (LoadAllGuildsCommandsResponse) {}
+    rpc LoadGuildCommands (LoadGuildCommandsRequest) returns (LoadGuildCommandsResponse) {}
+}
+
+message LoadAllGuildsCommandsRequest {}
+
+message LoadAllGuildsCommandsResponse {
+    bool success = 1;
+    enum Error {
+        NONE = 0;
+        UNKNOWN = 1;
+    }
+    Error error = 2;
+}
+
+message LoadGuildCommandsRequest {
+    int32 id = 1;
+}
+
+message LoadGuildCommandsResponse {
+    bool success = 1;
+    enum Error {
+        NONE = 0;
+        UNKNOWN = 1;
+        NOT_FOUND = 2;
+    }
+    Error error = 2;
+}

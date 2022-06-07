@@ -39,6 +39,8 @@ import { SendMessageBuildingBlockService } from './building-block/send-message-b
 import { MessageReactionEventService } from './event/message-reaction-event/message-reaction-event.service';
 import { MessageReactionAddEventService } from './event/message-reaction-add-event/message-reaction-add-event.service';
 import { MessageReactionRemoveEventService } from './event/message-reaction-remove-event/message-reaction-remove-event.service';
+import { BotController } from './bot/bot.controller';
+import { BotService } from './bot/bot/bot.service';
 
 const discordFactory = {
   provide: Discord,
@@ -95,7 +97,9 @@ const discordFactory = {
     MessageReactionEventService,
     MessageReactionAddEventService,
     MessageReactionRemoveEventService,
+    BotService,
   ],
   exports: [discordFactory],
+  controllers: [BotController],
 })
 export class DiscordModule {}

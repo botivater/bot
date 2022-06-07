@@ -25,6 +25,7 @@ import { SetBirthdayCommandService } from './set-birthday-command/set-birthday-c
 import { RecreateFlowsCommandService } from './recreate-flows-command/recreate-flows-command.service';
 import { ReportCommandService } from './report-command/report-command.service';
 import { LogUsageService } from '../log-usage/log-usage.service';
+import { Guild } from '@common/common/guild/guild.entity';
 
 type Map<T> = {
   [index: string]: (interaction: T) => Promise<void> | void;
@@ -36,6 +37,7 @@ export class CommandService {
   private commandMap: Map<CommandInteraction<CacheType>> = {};
   private modalSubmitMap: Map<ModalSubmitInteraction<CacheType>> = {};
   private restCommandArray: RESTPostAPIApplicationCommandsJSONBody[] = [];
+  private readonly rest: REST;
 
   /**
    *
@@ -55,6 +57,10 @@ export class CommandService {
     private readonly reportCommandService: ReportCommandService,
     private readonly logUsageService: LogUsageService,
   ) {
+    this.rest = new REST({ version: '9' }).setToken(
+      this.configService.getOrThrow('BOT_TOKEN'),
+    );
+
     this.register(this.pingCommandService);
     this.register(this.devCommandService);
     this.register(this.toneIndicatorCommandService);
@@ -63,10 +69,6 @@ export class CommandService {
     this.register(this.setBirthdayCommandService);
     this.register(this.recreateFlowsCommandService);
     this.register(this.reportCommandService);
-
-    // TODO: Replace this by an API call
-    // This doesn't have to be called on startup, only when changes are made.
-    this.pushToDiscord();
   }
 
   public async register(command: Command) {
@@ -77,42 +79,36 @@ export class CommandService {
       command.handleModalSubmit.bind(command);
   }
 
-  public async pushToDiscord() {
-    const rest = new REST({ version: '9' }).setToken(
-      this.configService.getOrThrow('BOT_TOKEN'),
-    );
+  public async putGuildsCommands(guilds: Guild[]) {
+    await Promise.all(guilds.map((guild) => this.putGuildCommands(guild)));
+  }
 
-    await Promise.all(
-      this.discord.guilds.cache.map(async (discordGuild) => {
-        const restCommandArrayCopy = [...this.restCommandArray];
+  public async putGuildCommands(guild: Guild) {
+    const restCommandArrayCopy = [...this.restCommandArray];
 
-        const commandLists = await this.commandListRepository.find({
-          where: {
-            guild: {
-              snowflake: discordGuild.id,
-            },
-          },
-        });
+    const commandLists = await this.commandListRepository.findBy({
+      guild: {
+        id: guild.id,
+      },
+    });
 
-        for (const commandList of commandLists) {
-          const command = new SlashCommandBuilder()
-            .setName(commandList.name)
-            .setDescription(commandList.description)
-            .setDefaultPermission(false);
+    for (const commandList of commandLists) {
+      const command = new SlashCommandBuilder()
+        .setName(commandList.name)
+        .setDescription(commandList.description)
+        .setDefaultPermission(true);
 
-          restCommandArrayCopy.push(command.toJSON());
-        }
+      restCommandArrayCopy.push(command.toJSON());
+    }
 
-        await rest.put(
-          Routes.applicationGuildCommands(
-            this.configService.getOrThrow('APPLICATION_ID'),
-            discordGuild.id,
-          ),
-          {
-            body: restCommandArrayCopy,
-          },
-        );
-      }),
+    await this.rest.put(
+      Routes.applicationGuildCommands(
+        this.configService.getOrThrow('APPLICATION_ID'),
+        guild.snowflake,
+      ),
+      {
+        body: restCommandArrayCopy,
+      },
     );
   }
 

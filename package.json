@@ -26,10 +26,13 @@
   "dependencies": {
     "@discordjs/builders": "^0.13.0",
     "@discordjs/rest": "^0.4.1",
+    "@grpc/grpc-js": "^1.6.7",
+    "@grpc/proto-loader": "^0.6.13",
     "@nestjs/common": "^8.0.0",
     "@nestjs/config": "^2.1.0",
     "@nestjs/core": "^8.0.0",
     "@nestjs/mapped-types": "*",
+    "@nestjs/microservices": "^8.4.6",
     "@nestjs/platform-express": "^8.0.0",
     "@nestjs/schedule": "^2.0.1",
     "@nestjs/typeorm": "^8.1.2",
