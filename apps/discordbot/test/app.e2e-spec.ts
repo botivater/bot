@@ -1,24 +1,21 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
-import * as request from 'supertest';
-import { DiscordbotModule } from './../src/discordbot.module';
+// import * as request from 'supertest';
+import { DiscordBotModule } from '../src/discord-bot/discord-bot.module';
 
 describe('DiscordbotController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [DiscordbotModule],
+      imports: [DiscordBotModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
     await app.init();
   });
 
-  it('/ (GET)', () => {
-    return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+  it('should be defined', () => {
+    expect(app.get('DiscordBotController')).toBeDefined();
   });
 });
