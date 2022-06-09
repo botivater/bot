@@ -2,7 +2,6 @@ import { Guild } from '@common/common/guild/guild.entity';
 import { Provider } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CommandService } from '../../command/command.service';
 import { BotService } from './bot.service';
 
