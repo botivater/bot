@@ -785,7 +785,7 @@
 
 "@nestjs/testing@^8.4.6":
   version "8.4.6"
-  resolved "https://registry.npmjs.org/@nestjs/testing/-/testing-8.4.6.tgz"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-8.4.6.tgz#4e80368090bb71d775d14d99efa96803b96312d0"
   integrity sha512-uGRNQ0iWIHqjz5CLxQCTtQ3dB1KyPfkHXnko5mBwKk/iBTiACmll61rVt89Wh8RM+w0bmvCHp9sacNI7IynESg==
   dependencies:
     tslib "2.4.0"
