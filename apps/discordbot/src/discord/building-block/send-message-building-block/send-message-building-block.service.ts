@@ -39,8 +39,8 @@ export class SendMessageBuildingBlockService {
           const user = this.discord.users.cache.get(to);
           if (!user) throw new Error('User not found');
 
-          user.send(stringTemplate(messageParameters));
-          return;
+          await user.send(stringTemplate(messageParameters));
+          break;
 
         case SendMessageTo.CHANNEL:
           await this.discord.channels.fetch(to);
@@ -49,8 +49,8 @@ export class SendMessageBuildingBlockService {
           if (!channel.isText())
             throw new Error('Guild channel is not a text channel');
 
-          channel.send(stringTemplate(messageParameters));
-          return;
+          await channel.send(stringTemplate(messageParameters));
+          break;
       }
     } catch (err) {
       this.logger.error(err);
