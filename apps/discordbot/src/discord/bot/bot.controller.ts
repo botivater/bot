@@ -12,6 +12,8 @@ import {
   LoadGuildCommandsResponseError,
   LoadGuildCommandsResponse,
 } from './interface/load-guild-commands-response.interface';
+import { PingRequest } from './interface/ping-request.interface';
+import { PingResponse } from './interface/ping-response.interface';
 
 @Controller('bot')
 export class BotController {
@@ -21,6 +23,20 @@ export class BotController {
    *
    */
   constructor(private readonly botService: BotService) {}
+
+  @GrpcMethod('BotService')
+  ping(
+    data: PingRequest,
+    metadata: Metadata,
+    call: ServerUnaryCall<any, any>,
+  ): PingResponse {
+    this.logger.debug(`GRPC->ping()`);
+    const { id } = data;
+
+    return {
+      id,
+    };
+  }
 
   @GrpcMethod('BotService')
   async loadAllGuildsCommands(
