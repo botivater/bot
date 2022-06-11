@@ -1,11 +1,13 @@
 import { Guild } from '@common/common/guild/guild.entity';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Request } from 'express';
+import { FindManyOptions, FindOneOptions, In, Repository } from 'typeorm';
 import { CreateGuildDto } from './dto/create-guild.dto';
 import { UpdateGuildDto } from './dto/update-guild.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class GuildService {
   private readonly logger = new Logger(GuildService.name);
 
@@ -14,25 +16,34 @@ export class GuildService {
    */
   constructor(
     @InjectRepository(Guild) private guildRepository: Repository<Guild>,
+    @Inject(REQUEST) private readonly request: Request,
   ) {}
 
   create(createGuildDto: CreateGuildDto) {
-    return 'This action adds a new guild';
+    const guild = this.guildRepository.create(createGuildDto);
+    return this.guildRepository.save(guild);
   }
 
-  findAll() {
-    return this.guildRepository.find();
+  findAll(options?: FindManyOptions<Guild>) {
+    return this.guildRepository.find({
+      where: {
+        tenant: {
+          id: In(this.request.user.tenants.map((t) => t.id)),
+        },
+      },
+      ...options,
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} guild`;
+  findOne(options: FindOneOptions<Guild>) {
+    return this.guildRepository.findOne(options);
   }
 
   update(id: number, updateGuildDto: UpdateGuildDto) {
-    return `This action updates a #${id} guild`;
+    return this.guildRepository.update({ id }, updateGuildDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} guild`;
+    return this.guildRepository.delete({ id });
   }
 }

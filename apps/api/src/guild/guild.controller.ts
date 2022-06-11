@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { GuildService } from './guild.service';
 import { CreateGuildDto } from './dto/create-guild.dto';
 import { UpdateGuildDto } from './dto/update-guild.dto';
+import { JwtGuard } from '../auth/jwt.guard';
 
+@UseGuards(JwtGuard)
 @Controller('guild')
 export class GuildController {
   constructor(private readonly guildService: GuildService) {}
@@ -27,7 +30,7 @@ export class GuildController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.guildService.findOne(+id);
+    return this.guildService.findOne({ where: { id: +id } });
   }
 
   @Patch(':id')

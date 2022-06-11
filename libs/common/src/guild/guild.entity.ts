@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -14,6 +15,7 @@ import { CommandList } from '../commandList/commandList.entity';
 import { EventFlow } from '../eventFlow/eventFlow.entity';
 import { GuildConfig } from '../guildConfig/guildConfig.entity';
 import { GuildMember } from '../guildMember/guildMember.entity';
+import { Tenant } from '../tenant/tenant.entity';
 
 @Entity()
 export class Guild {
@@ -36,7 +38,7 @@ export class Guild {
   guildMembers: GuildMember[];
 
   @OneToOne(() => GuildConfig, {
-    nullable: false,
+    nullable: true,
     cascade: ['insert', 'update', 'remove'],
   })
   @JoinColumn()
@@ -59,4 +61,7 @@ export class Guild {
 
   @OneToMany(() => EventFlow, (eventFlow) => eventFlow.guild)
   eventFlows: EventFlow[];
+
+  @ManyToOne(() => Tenant, (tenant) => tenant.guilds)
+  tenant: Tenant;
 }

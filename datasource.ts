@@ -12,6 +12,8 @@ import { EventFlowCondition } from './libs/common/src/eventFlowCondition/eventFl
 import { EventFlowAction } from './libs/common/src/eventFlowAction/eventFlowAction.entity';
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
+import { Tenant } from './libs/common/src/tenant/tenant.entity';
+import { User } from './libs/common/src/user/user.entity';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -29,6 +31,8 @@ export const AppDataSource = new DataSource({
     EventFlowTrigger,
     EventFlowCondition,
     EventFlowAction,
+    Tenant,
+    User,
   ],
   migrations: [`${__dirname}/migrations/*.ts`],
 });
