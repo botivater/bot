@@ -11,7 +11,7 @@ jobs:
   docker:
     strategy:
       matrix:
-        application: ['bot', 'discordbot']
+        application: ['bot', 'discordbot', 'api']
 #     runs-on: self-hosted
     runs-on: ubuntu-latest
     steps:
