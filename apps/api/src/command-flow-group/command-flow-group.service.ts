@@ -1,26 +1,54 @@
-import { Injectable } from '@nestjs/common';
+import { CommandFlowGroup } from '@common/common/commandFlowGroup/commandFlowGroup.entity';
+import { Inject, Injectable, Logger, Scope } from '@nestjs/common';
+import { REQUEST } from '@nestjs/core';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { CreateCommandFlowGroupDto } from './dto/create-command-flow-group.dto';
 import { UpdateCommandFlowGroupDto } from './dto/update-command-flow-group.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class CommandFlowGroupService {
-  create(createCommandFlowGroupDto: CreateCommandFlowGroupDto) {
-    return 'This action adds a new commandFlowGroup';
+  private readonly logger = new Logger(CommandFlowGroupService.name);
+
+  /**
+   *
+   */
+  constructor(
+    @InjectRepository(CommandFlowGroup)
+    private readonly commandFlowGroupRepository: Repository<CommandFlowGroup>,
+    @Inject(REQUEST) private readonly request: Request,
+  ) {}
+
+  async create(createCommandFlowGroupDto: CreateCommandFlowGroupDto) {
+    const commandFlowGroup = this.commandFlowGroupRepository.create(
+      createCommandFlowGroupDto,
+    );
+    return await this.commandFlowGroupRepository.save(commandFlowGroup);
   }
 
-  findAll() {
-    return `This action returns all commandFlowGroup`;
+  async findAll(options?: FindManyOptions<CommandFlowGroup>) {
+    return await this.commandFlowGroupRepository.find(options);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} commandFlowGroup`;
+  async findOne(options: FindOneOptions<CommandFlowGroup>) {
+    return await this.commandFlowGroupRepository.findOne(options);
   }
 
-  update(id: number, updateCommandFlowGroupDto: UpdateCommandFlowGroupDto) {
-    return `This action updates a #${id} commandFlowGroup`;
+  async update(
+    id: number,
+    updateCommandFlowGroupDto: UpdateCommandFlowGroupDto,
+  ) {
+    const commandFlowGroup = await this.commandFlowGroupRepository.findOneBy({
+      id,
+    });
+    this.commandFlowGroupRepository.merge(
+      commandFlowGroup,
+      updateCommandFlowGroupDto,
+    );
+    return await this.commandFlowGroupRepository.save(commandFlowGroup);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} commandFlowGroup`;
+  async remove(id: number) {
+    return await this.commandFlowGroupRepository.delete({ id });
   }
 }

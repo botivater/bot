@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { GuildConfigService } from './guild-config.service';
 import { CreateGuildConfigDto } from './dto/create-guild-config.dto';
 import { UpdateGuildConfigDto } from './dto/update-guild-config.dto';
+import { JwtGuard } from '../auth/jwt.guard';
 
+@UseGuards(JwtGuard)
 @Controller('guild-config')
 export class GuildConfigController {
   constructor(private readonly guildConfigService: GuildConfigService) {}

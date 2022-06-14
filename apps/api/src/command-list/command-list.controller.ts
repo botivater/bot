@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtGuard } from '../auth/jwt.guard';
 import { CommandListService } from './command-list.service';
 import { CreateCommandListDto } from './dto/create-command-list.dto';
 import { UpdateCommandListDto } from './dto/update-command-list.dto';
 
+@UseGuards(JwtGuard)
 @Controller('command-list')
 export class CommandListController {
   constructor(private readonly commandListService: CommandListService) {}
