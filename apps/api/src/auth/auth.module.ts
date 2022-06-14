@@ -18,7 +18,7 @@ import { TenantModule } from '../tenant/tenant.module';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.getOrThrow('JWT_SECRET'),
         signOptions: {
-          expiresIn: '60m',
+          expiresIn: '7d',
         },
       }),
       imports: [ConfigModule],

@@ -40,6 +40,8 @@
     "@nestjs/schedule": "^2.0.1",
     "@nestjs/terminus": "^8.0.6",
     "@nestjs/typeorm": "^8.1.2",
+    "@types/bcrypt": "^5.0.0",
+    "bcrypt": "^5.0.1",
     "discord-api-types": "^0.33.2",
     "discord.js": "^13.7.0",
     "dotenv": "^16.0.1",

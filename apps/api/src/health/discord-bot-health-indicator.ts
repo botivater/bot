@@ -22,7 +22,7 @@ export class DiscordBotHealthIndicator extends HealthIndicator {
         // Commented out due to bug in GRPCjs
         // when connection fails the whole process crashes
         // even when wrapping in a try/catch
-        // this.apiService.ping().subscribe(() => resolve(true));
+        this.apiService.ping().subscribe(() => resolve(true));
         setTimeout(() => resolve(false), 5000);
       });
     } catch (err) {

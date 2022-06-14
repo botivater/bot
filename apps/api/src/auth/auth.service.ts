@@ -1,10 +1,13 @@
 import { User } from '@common/common/user/user.entity';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { UserService } from '../user/user.service';
 import { JwtService } from '@nestjs/jwt';
+import { compare } from 'bcrypt';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
+
   /**
    *
    */
@@ -18,10 +21,15 @@ export class AuthService {
       where: { email },
     });
 
-    // TODO: Write stronger implementation using bcrypt
-    if (user && user.password === password) {
-      const { password, ...result } = user;
-      return result;
+    if (user) {
+      const isValid = await compare(password, user.password);
+
+      if (isValid) {
+        const { password, ...result } = user;
+        return result;
+      } else {
+        this.logger.log(`Failed login attempt for user ${email}`);
+      }
     }
     return null;
   }
