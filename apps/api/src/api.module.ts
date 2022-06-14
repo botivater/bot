@@ -11,6 +11,9 @@ import { UserModule } from './user/user.module';
 import { TenantModule } from './tenant/tenant.module';
 import { GuildMemberModule } from './guild-member/guild-member.module';
 import { GuildConfigModule } from './guild-config/guild-config.module';
+import { CommandListModule } from './command-list/command-list.module';
+import { CommandInvocationModule } from './command-invocation/command-invocation.module';
+import { CommandFlowGroupModule } from './command-flow-group/command-flow-group.module';
 
 @Module({
   imports: [
@@ -33,6 +36,9 @@ import { GuildConfigModule } from './guild-config/guild-config.module';
     TenantModule,
     GuildMemberModule,
     GuildConfigModule,
+    CommandListModule,
+    CommandInvocationModule,
+    CommandFlowGroupModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],

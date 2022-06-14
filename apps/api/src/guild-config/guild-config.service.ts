@@ -1,13 +1,13 @@
 import { GuildConfig } from '@common/common/guildConfig/guildConfig.entity';
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Request } from 'express';
-import { FindManyOptions, FindOneOptions } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { CreateGuildConfigDto } from './dto/create-guild-config.dto';
 import { UpdateGuildConfigDto } from './dto/update-guild-config.dto';
 
-@Injectable()
+@Injectable({ scope: Scope.REQUEST })
 export class GuildConfigService {
   private readonly logger = new Logger(GuildConfigService.name);
 
@@ -15,7 +15,8 @@ export class GuildConfigService {
    *
    */
   constructor(
-    @InjectRepository(GuildConfig) private readonly guildConfigRepository,
+    @InjectRepository(GuildConfig)
+    private readonly guildConfigRepository: Repository<GuildConfig>,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
