@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CommandInvocationService } from './command-invocation.service';
 import { CreateCommandInvocationDto } from './dto/create-command-invocation.dto';
@@ -23,13 +24,17 @@ export class CommandInvocationController {
   }
 
   @Get()
-  findAll() {
-    return this.commandInvocationService.findAll();
+  findAll(@Query('guildId') guildId: string) {
+    return this.commandInvocationService.findAll({
+      where: {
+        guild: { id: +guildId },
+      },
+    });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.commandInvocationService.findOne(+id);
+    return this.commandInvocationService.findOne({ where: { id: +id } });
   }
 
   @Patch(':id')
