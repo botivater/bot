@@ -23,21 +23,23 @@ export class MessageCreateEventService {
     try {
       if (message.partial) await message.fetch();
 
-      const { member, guild, createdTimestamp } = message;
+      if (message.inGuild()) {
+        const { member, guild, createdTimestamp } = message;
 
-      if (member.user.bot) return;
+        if (member.user.bot) return;
 
-      const dbGuild = await this.syncProvider.guild(guild);
-      const dbGuildMember = await this.syncProvider.guildMember(
-        dbGuild,
-        member,
-      );
+        const dbGuild = await this.syncProvider.guild(guild);
+        const dbGuildMember = await this.syncProvider.guildMember(
+          dbGuild,
+          member,
+        );
 
-      await this.activityProvider.register({
-        guildSnowflake: guild.id,
-        guildMemberSnowflake: member.user.id,
-        timestamp: new Date(createdTimestamp),
-      });
+        await this.activityProvider.register({
+          guildSnowflake: guild.id,
+          guildMemberSnowflake: member.user.id,
+          timestamp: new Date(createdTimestamp),
+        });
+      }
     } catch (err) {
       this.logger.error(err);
     }

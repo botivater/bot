@@ -1,6 +1,11 @@
 import { Controller, Logger } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { BotService, NotFoundError } from './bot/bot.service';
+import { CreateMessageWithReactionRequest } from './interface/create-message-with-reaction-request.interface';
+import {
+  CreateMessageWithReactionResponse,
+  CreateMessageWithReactionResponseError,
+} from './interface/create-message-with-reaction-response.interface';
 import { GetGuildChannelsRequest } from './interface/get-guild-channels-request.interface';
 import {
   GetGuildChannelsResponse,
@@ -251,6 +256,52 @@ export class BotController {
         return {
           success: false,
           error: SpeakResponseError.UNKNOWN,
+        };
+      }
+    }
+  }
+
+  @GrpcMethod('BotService')
+  async createMessageWithReactions(
+    data: CreateMessageWithReactionRequest,
+  ): Promise<CreateMessageWithReactionResponse> {
+    try {
+      const { channelSnowflake, message, reactions } = data;
+
+      if (!channelSnowflake)
+        throw new Error('channelSnowflake is undefined or null');
+      if (!message) throw new Error('message is undefined or null');
+      if (!reactions) throw new Error('reactions is undefined or null');
+
+      this.logger.debug(
+        `GRPC->createMessageWithReaction(channelSnowflake: ${channelSnowflake}; message: ${message}; reactions: ${reactions})`,
+      );
+
+      const messageSnowflake = await this.botService.createMessageWithReactions(
+        channelSnowflake,
+        message,
+        reactions,
+      );
+
+      return {
+        success: true,
+        error: CreateMessageWithReactionResponseError.NONE,
+        messageSnowflake,
+      };
+    } catch (err) {
+      this.logger.error(err);
+
+      if (err instanceof NotFoundError) {
+        return {
+          success: false,
+          error: CreateMessageWithReactionResponseError.NOT_FOUND,
+          messageSnowflake: null,
+        };
+      } else {
+        return {
+          success: false,
+          error: CreateMessageWithReactionResponseError.UNKNOWN,
+          messageSnowflake: null,
         };
       }
     }

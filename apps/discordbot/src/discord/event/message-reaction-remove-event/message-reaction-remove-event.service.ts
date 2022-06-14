@@ -33,7 +33,7 @@ export class MessageReactionRemoveEventService {
       this.messageReactionEventService.handle(
         reaction,
         user,
-        OnType.REACTION_ADD,
+        OnType.REACTION_REMOVE,
       );
     } catch (err) {
       this.logger.error(err);

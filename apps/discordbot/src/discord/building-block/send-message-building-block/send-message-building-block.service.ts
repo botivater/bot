@@ -39,7 +39,11 @@ export class SendMessageBuildingBlockService {
           const user = this.discord.users.cache.get(to);
           if (!user) throw new Error('User not found');
 
-          await user.send(stringTemplate(messageParameters));
+          await user.send(
+            stringTemplate(messageParameters, {
+              allowProtoPropertiesByDefault: true,
+            }),
+          );
           break;
 
         case SendMessageTo.CHANNEL:
@@ -49,7 +53,11 @@ export class SendMessageBuildingBlockService {
           if (!channel.isText())
             throw new Error('Guild channel is not a text channel');
 
-          await channel.send(stringTemplate(messageParameters));
+          await channel.send(
+            stringTemplate(messageParameters, {
+              allowProtoPropertiesByDefault: true,
+            }),
+          );
           break;
       }
     } catch (err) {

@@ -1,3 +1,5 @@
+import { CreateMessageWithReactionRequest } from 'apps/discordbot/src/discord/bot/interface/create-message-with-reaction-request.interface';
+import { CreateMessageWithReactionResponse } from 'apps/discordbot/src/discord/bot/interface/create-message-with-reaction-response.interface';
 import { Observable } from 'rxjs';
 import { BotGuildChannel } from './bot-guild-channel.interface';
 import { BotGuildMember } from './bot-guild-member.interface';
@@ -16,4 +18,7 @@ export interface BotService {
   getGuildMembers(data: { guildId: number }): Observable<BotGuildMember[]>;
   getGuildRoles(data: { guildId: number }): Observable<BotGuildRole[]>;
   speak(data: BotSpeakRequest): Observable<BotSpeakResponse>;
+  createMessageWithReactions(
+    data: CreateMessageWithReactionRequest,
+  ): Observable<CreateMessageWithReactionResponse>;
 }

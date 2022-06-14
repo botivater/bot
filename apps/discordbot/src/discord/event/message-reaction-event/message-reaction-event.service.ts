@@ -103,6 +103,9 @@ export class MessageReactionEventService {
           },
           messageId: reaction.message.id,
           type: CommandFlowGroupType.REACTION,
+          commandFlows: {
+            onType,
+          },
         },
         relations: {
           commandFlows: true,
@@ -147,7 +150,7 @@ export class MessageReactionEventService {
 
         // Send a message.
         if (commandFlow.buildingBlockType === BuildingBlockType.SEND_MESSAGE) {
-          const { toType, to, messageFormat } = JSON.parse(commandFlow.options);
+          const { toType, to, messageFormat } = <any>commandFlow.options;
 
           const options = {
             toType,
@@ -166,13 +169,12 @@ export class MessageReactionEventService {
           }
 
           await this.sendMessageBuildingBlockService.handle(options);
-
           continue;
         }
 
         // Add a role
         if (commandFlow.buildingBlockType === BuildingBlockType.ADD_ROLE) {
-          const { roleId } = JSON.parse(commandFlow.options);
+          const { roleId } = <any>commandFlow.options;
 
           await this.addRoleBuildingBlockService.handle({
             guildSnowflake: guild.id,
@@ -185,7 +187,7 @@ export class MessageReactionEventService {
 
         // Remove a role
         if (commandFlow.buildingBlockType === BuildingBlockType.REMOVE_ROLE) {
-          const { roleId } = JSON.parse(commandFlow.options);
+          const { roleId } = <any>commandFlow.options;
 
           await this.removeRoleBuildingBlockService.handle({
             guildSnowflake: guild.id,

@@ -91,4 +91,27 @@ export class BotService implements IBotService {
 
     await channel.send(message);
   }
+
+  async createMessageWithReactions(
+    channelSnowflake: string,
+    message: string,
+    reactions: string[],
+  ): Promise<string> {
+    await this.discord.channels.fetch(channelSnowflake);
+    const channel = this.discord.channels.cache.get(channelSnowflake);
+    if (!channel) throw new NotFoundError();
+    if (!channel.isText()) throw new NotFoundError();
+
+    const messageSent = await channel.send(message);
+    try {
+      for (const reaction of reactions) {
+        await messageSent.react(reaction);
+      }
+    } catch (err) {
+      await messageSent.delete();
+      throw new Error("Couldn't react to message");
+    }
+
+    return messageSent.id;
+  }
 }

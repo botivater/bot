@@ -12,6 +12,8 @@ service BotService {
   rpc GetGuildRoles (GetGuildRolesRequest) returns (GetGuildRolesResponse) {}
 
   rpc Speak (SpeakRequest) returns (SpeakResponse) {}
+
+  rpc CreateMessageWithReactions (CreateMessageWithReactionsRequest) returns (CreateMessageWithReactionsResponse) {}
 }
 
 message LoadAllGuildsCommandsRequest {}
@@ -124,4 +126,21 @@ message SpeakResponse {
     NOT_FOUND = 2;
   }
   Error error = 2;
+}
+
+message CreateMessageWithReactionsRequest {
+  string channelSnowflake = 1;
+  string message = 2;
+  repeated string reactions = 3;
+}
+
+message CreateMessageWithReactionsResponse {
+  bool success = 1;
+  enum Error {
+    NONE = 0;
+    UNKNOWN = 1;
+    NOT_FOUND = 2;
+  }
+  Error error = 2;
+  string messageSnowflake = 3;
 }

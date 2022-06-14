@@ -1,5 +1,7 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
+import { CreateMessageWithReactionRequest } from 'apps/discordbot/src/discord/bot/interface/create-message-with-reaction-request.interface';
+import { CreateMessageWithReactionResponse } from 'apps/discordbot/src/discord/bot/interface/create-message-with-reaction-response.interface';
 import { Observable } from 'rxjs';
 import { BotGuildChannel } from './bot-guild-channel.interface';
 import { BotGuildMember } from './bot-guild-member.interface';
@@ -47,5 +49,11 @@ export class ApiService implements OnModuleInit {
 
   speak(data: BotSpeakRequest): Observable<BotSpeakResponse> {
     return this.botService.speak(data);
+  }
+
+  createMessageWithReaction(
+    data: CreateMessageWithReactionRequest,
+  ): Observable<CreateMessageWithReactionResponse> {
+    return this.botService.createMessageWithReactions(data);
   }
 }
