@@ -9,6 +9,7 @@ import { CommonModule } from '@common/common';
 import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { TenantModule } from './tenant/tenant.module';
+import { GuildMemberModule } from './guild-member/guild-member.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { TenantModule } from './tenant/tenant.module';
     AuthModule,
     UserModule,
     TenantModule,
+    GuildMemberModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],

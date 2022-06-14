@@ -19,13 +19,13 @@ export class GuildService {
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
-  create(createGuildDto: CreateGuildDto) {
+  async create(createGuildDto: CreateGuildDto) {
     const guild = this.guildRepository.create(createGuildDto);
-    return this.guildRepository.save(guild);
+    return await this.guildRepository.save(guild);
   }
 
-  findAll(options?: FindManyOptions<Guild>) {
-    return this.guildRepository.find({
+  async findAll(options?: FindManyOptions<Guild>) {
+    return await this.guildRepository.find({
       where: {
         tenant: {
           id: In(this.request.user.tenants.map((t) => t.id)),
@@ -35,15 +35,17 @@ export class GuildService {
     });
   }
 
-  findOne(options: FindOneOptions<Guild>) {
-    return this.guildRepository.findOne(options);
+  async findOne(options: FindOneOptions<Guild>) {
+    return await this.guildRepository.findOne(options);
   }
 
-  update(id: number, updateGuildDto: UpdateGuildDto) {
-    return this.guildRepository.update({ id }, updateGuildDto);
+  async update(id: number, updateGuildDto: UpdateGuildDto) {
+    const guild = await this.guildRepository.findOneBy({ id });
+    this.guildRepository.merge(guild, updateGuildDto);
+    return await this.guildRepository.save(guild);
   }
 
-  remove(id: number) {
-    return this.guildRepository.delete({ id });
+  async remove(id: number) {
+    return await this.guildRepository.delete({ id });
   }
 }
