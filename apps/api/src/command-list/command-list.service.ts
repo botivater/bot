@@ -2,6 +2,7 @@ import { CommandList } from '@common/common/commandList/commandList.entity';
 import { Inject, Injectable, Logger, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { CreateCommandListDto } from './dto/create-command-list.dto';
 import { UpdateCommandListDto } from './dto/update-command-list.dto';

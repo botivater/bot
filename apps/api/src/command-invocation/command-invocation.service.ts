@@ -2,6 +2,7 @@ import { CommandInvocation } from '@common/common/commandInvocation/commandInvoc
 import { Inject, Injectable, Logger, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Request } from 'express';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { CreateCommandInvocationDto } from './dto/create-command-invocation.dto';
 import { UpdateCommandInvocationDto } from './dto/update-command-invocation.dto';
