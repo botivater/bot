@@ -4,6 +4,8 @@ import { Observable } from 'rxjs';
 import { BotGuildChannel } from './bot-guild-channel.interface';
 import { BotGuildMember } from './bot-guild-member.interface';
 import { BotGuildRole } from './bot-guild-role.interface';
+import { BotLoadGuildCommandsRequest } from './bot-load-guild-commands-request.interface';
+import { BotLoadGuildCommandsResponse } from './bot-load-guild-commands-response.interface';
 import { BotService } from './bot-service.interface';
 import { BotSpeakRequest } from './bot-speak-request.interface';
 import { BotSpeakResponse } from './bot-speak-response.interface';
@@ -19,6 +21,12 @@ export class ApiService implements OnModuleInit {
 
   onModuleInit() {
     this.botService = this.client.getService<BotService>('BotService');
+  }
+
+  loadGuildCommands(
+    data: BotLoadGuildCommandsRequest,
+  ): Observable<BotLoadGuildCommandsResponse> {
+    return this.botService.loadGuildCommands(data);
   }
 
   ping(id = 1): Observable<{ id: number }> {

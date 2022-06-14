@@ -1,4 +1,5 @@
 import { CommandList } from '@common/common/commandList/commandList.entity';
+import { Guild } from '@common/common/guild/guild.entity';
 import { Inject, Injectable, Logger, Scope } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,11 +18,19 @@ export class CommandListService {
   constructor(
     @InjectRepository(CommandList)
     private readonly commandListRepository: Repository<CommandList>,
+    @InjectRepository(Guild)
+    private readonly guildRepository: Repository<Guild>,
     @Inject(REQUEST) private readonly request: Request,
   ) {}
 
   async create(createCommandListDto: CreateCommandListDto) {
-    const commandList = this.commandListRepository.create(createCommandListDto);
+    const guild = await this.guildRepository.findOneByOrFail({
+      id: createCommandListDto.guildId,
+    });
+    const commandList = this.commandListRepository.create({
+      ...createCommandListDto,
+      guild,
+    });
     return await this.commandListRepository.save(commandList);
   }
 
