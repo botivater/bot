@@ -1,5 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
@@ -25,14 +25,19 @@ import { LoadGuildCommandsModule } from './discord/load-guild-commands/load-guil
   imports: [
     ConfigModule.forRoot(),
     CommonModule,
-    ClientsModule.register([
+    ClientsModule.registerAsync([
       {
         name: 'BOT_PACKAGE',
-        transport: Transport.GRPC,
-        options: {
-          package: 'bot',
-          protoPath: 'protobuf/bot/bot.proto',
-        },
+        useFactory: (configService: ConfigService) => ({
+          transport: Transport.GRPC,
+          options: {
+            package: 'bot',
+            protoPath: 'protobuf/bot/bot.proto',
+            url: configService.get('BOT_GRPC_URL'),
+          },
+        }),
+        imports: [ConfigModule],
+        inject: [ConfigService],
       },
     ]),
     forwardRef(() => HealthModule),
