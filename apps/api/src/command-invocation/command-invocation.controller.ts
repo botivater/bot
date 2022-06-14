@@ -1,11 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { CommandInvocationService } from './command-invocation.service';
 import { CreateCommandInvocationDto } from './dto/create-command-invocation.dto';
 import { UpdateCommandInvocationDto } from './dto/update-command-invocation.dto';
 
 @Controller('command-invocation')
 export class CommandInvocationController {
-  constructor(private readonly commandInvocationService: CommandInvocationService) {}
+  constructor(
+    private readonly commandInvocationService: CommandInvocationService,
+  ) {}
 
   @Post()
   create(@Body() createCommandInvocationDto: CreateCommandInvocationDto) {
@@ -23,8 +33,14 @@ export class CommandInvocationController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCommandInvocationDto: UpdateCommandInvocationDto) {
-    return this.commandInvocationService.update(+id, updateCommandInvocationDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateCommandInvocationDto: UpdateCommandInvocationDto,
+  ) {
+    return this.commandInvocationService.update(
+      +id,
+      updateCommandInvocationDto,
+    );
   }
 
   @Delete(':id')

@@ -4,6 +4,6 @@ import { CommandInvocationController } from './command-invocation.controller';
 
 @Module({
   controllers: [CommandInvocationController],
-  providers: [CommandInvocationService]
+  providers: [CommandInvocationService],
 })
 export class CommandInvocationModule {}

@@ -11,7 +11,9 @@ describe('CommandFlowGroupController', () => {
       providers: [CommandFlowGroupService],
     }).compile();
 
-    controller = module.get<CommandFlowGroupController>(CommandFlowGroupController);
+    controller = module.get<CommandFlowGroupController>(
+      CommandFlowGroupController,
+    );
   });
 
   it('should be defined', () => {

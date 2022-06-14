@@ -11,7 +11,9 @@ describe('CommandInvocationController', () => {
       providers: [CommandInvocationService],
     }).compile();
 
-    controller = module.get<CommandInvocationController>(CommandInvocationController);
+    controller = module.get<CommandInvocationController>(
+      CommandInvocationController,
+    );
   });
 
   it('should be defined', () => {
