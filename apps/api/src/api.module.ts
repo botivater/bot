@@ -14,6 +14,7 @@ import { GuildConfigModule } from './guild-config/guild-config.module';
 import { CommandListModule } from './command-list/command-list.module';
 import { CommandInvocationModule } from './command-invocation/command-invocation.module';
 import { CommandFlowGroupModule } from './command-flow-group/command-flow-group.module';
+import { ReportModule } from './report/report.module';
 
 @Module({
   imports: [
@@ -39,6 +40,7 @@ import { CommandFlowGroupModule } from './command-flow-group/command-flow-group.
     CommandListModule,
     CommandInvocationModule,
     CommandFlowGroupModule,
+    ReportModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],

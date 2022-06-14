@@ -6,6 +6,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Guild } from '../guild/guild.entity';
 import { GuildMember } from '../guildMember/guildMember.entity';
 
 @Entity()
@@ -40,4 +41,7 @@ export class Report {
 
   @Column({ default: false })
   resolved: boolean;
+
+  @ManyToOne(() => Guild, (guild) => guild.reports)
+  guild: Guild;
 }

@@ -107,14 +107,6 @@ export class ReportCommandService implements Command {
           throw new Error('Could not find reported guild member');
       }
 
-      this.reportRepository.insert({
-        guildMember: dbGuildMemberSender,
-        channelId: interaction.channel.id,
-        description: description || undefined,
-        reportedGuildMember: dbGuildMemberReported,
-        anonymous: isAnonymous,
-      });
-
       const dbGuild = await this.guildRepository.findOne({
         where: {
           snowflake: interaction.guild.id,
@@ -122,6 +114,15 @@ export class ReportCommandService implements Command {
         relations: {
           guildConfig: true,
         },
+      });
+
+      this.reportRepository.insert({
+        guildMember: dbGuildMemberSender,
+        channelId: interaction.channel.id,
+        description: description || undefined,
+        reportedGuildMember: dbGuildMemberReported,
+        anonymous: isAnonymous,
+        guild: dbGuild,
       });
 
       const messageChannel = this.discord.channels.cache.get(

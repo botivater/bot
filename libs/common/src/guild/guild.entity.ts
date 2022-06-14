@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -15,6 +16,7 @@ import { CommandList } from '../commandList/commandList.entity';
 import { EventFlow } from '../eventFlow/eventFlow.entity';
 import { GuildConfig } from '../guildConfig/guildConfig.entity';
 import { GuildMember } from '../guildMember/guildMember.entity';
+import { Report } from '../report/report.entity';
 import { Tenant } from '../tenant/tenant.entity';
 
 @Entity()
@@ -64,4 +66,7 @@ export class Guild {
 
   @ManyToOne(() => Tenant, (tenant) => tenant.guilds)
   tenant: Tenant;
+
+  @OneToMany(() => Report, (report) => report.guild)
+  reports: Report[];
 }
