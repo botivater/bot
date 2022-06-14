@@ -56,7 +56,7 @@ describe('BotController', () => {
       );
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe(LoadAllGuildsCommandsResponseError.UNKOWN);
+      expect(result.error).toBe(LoadAllGuildsCommandsResponseError.UNKNOWN);
     });
   });
 
@@ -88,7 +88,7 @@ describe('BotController', () => {
       );
 
       expect(result.success).toBe(false);
-      expect(result.error).toBe(LoadGuildCommandsResponseError.UNKOWN);
+      expect(result.error).toBe(LoadGuildCommandsResponseError.UNKNOWN);
     });
 
     it('should return a not found response', async () => {

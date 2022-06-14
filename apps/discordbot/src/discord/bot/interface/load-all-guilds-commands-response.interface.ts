@@ -1,6 +1,6 @@
 export enum LoadAllGuildsCommandsResponseError {
   NONE = 0,
-  UNKOWN = 1,
+  UNKNOWN = 1,
 }
 
 export interface LoadAllGuildsCommandsResponse {

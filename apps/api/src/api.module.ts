@@ -15,6 +15,10 @@ import { CommandListModule } from './command-list/command-list.module';
 import { CommandInvocationModule } from './command-invocation/command-invocation.module';
 import { CommandFlowGroupModule } from './command-flow-group/command-flow-group.module';
 import { ReportModule } from './report/report.module';
+import { GuildChannelModule as DiscordGuildChannelModule } from './discord/guild-channel/guild-channel.module';
+import { GuildMemberModule as DiscordGuildMemberModule } from './discord/guild-member/guild-member.module';
+import { GuildRoleModule as DiscordGuildRoleModule } from './discord/guild-role/guild-role.module';
+import { SpeakModule } from './discord/speak/speak.module';
 
 @Module({
   imports: [
@@ -41,6 +45,10 @@ import { ReportModule } from './report/report.module';
     CommandInvocationModule,
     CommandFlowGroupModule,
     ReportModule,
+    DiscordGuildChannelModule,
+    DiscordGuildMemberModule,
+    DiscordGuildRoleModule,
+    SpeakModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],

@@ -27,12 +27,22 @@ export class ReportController {
       where: {
         guild: { id: +guildId },
       },
+      relations: {
+        guildMember: true,
+        reportedGuildMember: true,
+      },
     });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.reportService.findOne({ where: { id: +id } });
+    return this.reportService.findOne({
+      where: { id: +id },
+      relations: {
+        guildMember: true,
+        reportedGuildMember: true,
+      },
+    });
   }
 
   @Patch(':id')

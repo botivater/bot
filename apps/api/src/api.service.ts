@@ -1,7 +1,12 @@
 import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
 import { ClientGrpc } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
+import { BotGuildChannel } from './bot-guild-channel.interface';
+import { BotGuildMember } from './bot-guild-member.interface';
+import { BotGuildRole } from './bot-guild-role.interface';
 import { BotService } from './bot-service.interface';
+import { BotSpeakRequest } from './bot-speak-request.interface';
+import { BotSpeakResponse } from './bot-speak-response.interface';
 
 @Injectable()
 export class ApiService implements OnModuleInit {
@@ -18,5 +23,21 @@ export class ApiService implements OnModuleInit {
 
   ping(id = 1): Observable<{ id: number }> {
     return this.botService.ping({ id });
+  }
+
+  getGuildChannels(guildId: number): Observable<BotGuildChannel[]> {
+    return this.botService.getGuildChannels({ guildId });
+  }
+
+  getGuildMembers(guildId: number): Observable<BotGuildMember[]> {
+    return this.botService.getGuildMembers({ guildId });
+  }
+
+  getGuildRoles(guildId: number): Observable<BotGuildRole[]> {
+    return this.botService.getGuildRoles({ guildId });
+  }
+
+  speak(data: BotSpeakRequest): Observable<BotSpeakResponse> {
+    return this.botService.speak(data);
   }
 }
