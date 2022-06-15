@@ -24,9 +24,10 @@ import { HelpCommandService } from './help-command/help-command.service';
 import { SetBirthdayCommandService } from './set-birthday-command/set-birthday-command.service';
 import { RecreateFlowsCommandService } from './recreate-flows-command/recreate-flows-command.service';
 import { ReportCommandService } from './report-command/report-command.service';
+import { GenerateLoginService } from './generate-login/generate-login.service';
+import { CoupleLoginService } from './couple-login/couple-login.service';
 import { LogUsageService } from '../log-usage/log-usage.service';
 import { Guild } from '@common/common/guild/guild.entity';
-import { GenerateLoginService } from './generate-login/generate-login.service';
 
 type Map<T> = {
   [index: string]: (interaction: T) => Promise<void> | void;
@@ -57,6 +58,7 @@ export class CommandService {
     private readonly recreateFlowsCommandService: RecreateFlowsCommandService,
     private readonly reportCommandService: ReportCommandService,
     private readonly generateLoginService: GenerateLoginService,
+    private readonly coupleLoginService: CoupleLoginService,
     private readonly logUsageService: LogUsageService,
   ) {
     this.rest = new REST({ version: '9' }).setToken(
@@ -72,6 +74,7 @@ export class CommandService {
     this.register(this.recreateFlowsCommandService);
     this.register(this.reportCommandService);
     this.register(this.generateLoginService);
+    this.register(this.coupleLoginService);
   }
 
   public async register(command: Command) {

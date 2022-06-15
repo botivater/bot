@@ -46,6 +46,11 @@ import { User } from '@common/common/user/user.entity';
 import { Tenant } from '@common/common/tenant/tenant.entity';
 import { GuildCreateEventService } from './event/guild-create-event/guild-create-event.service';
 import { CoupleLoginService } from './command/couple-login/couple-login.service';
+import { GuildChannel } from '@common/common/guildChannel/guildChannel.entity';
+import { ChannelCreateEventService } from './event/channel-create-event/channel-create-event.service';
+import { ChannelUpdateEventService } from './event/channel-update-event/channel-update-event.service';
+import { ChannelDeleteEventService } from './event/channel-delete-event/channel-delete-event.service';
+import { Message } from '@common/common/message/message.entity';
 
 const discordFactory = {
   provide: Discord,
@@ -65,6 +70,7 @@ const discordFactory = {
       Guild,
       GuildConfig,
       GuildMember,
+      GuildChannel,
       CommandList,
       CommandFlowGroup,
       CommandFlow,
@@ -72,6 +78,7 @@ const discordFactory = {
       CommandInvocation,
       User,
       Tenant,
+      Message,
     ]),
     ScheduleModule.forRoot(),
   ],
@@ -108,6 +115,9 @@ const discordFactory = {
     GenerateLoginService,
     GuildCreateEventService,
     CoupleLoginService,
+    ChannelCreateEventService,
+    ChannelUpdateEventService,
+    ChannelDeleteEventService,
   ],
   exports: [discordFactory],
   controllers: [BotController],

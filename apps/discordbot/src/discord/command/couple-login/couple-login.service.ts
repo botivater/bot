@@ -58,7 +58,10 @@ export class CoupleLoginService implements Command {
       const email = interaction.options.getString('email');
       if (!email) throw new Error('Email is required.');
 
-      const user = await this.userRepository.findOneBy({ email });
+      const user = await this.userRepository.findOne({
+        where: { email },
+        relations: { tenants: true },
+      });
       if (!user) throw new Error('User with that email was not found.');
 
       const tenant = await this.tenantRepository.findOneByOrFail({

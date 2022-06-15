@@ -10,6 +10,7 @@ import {
 } from 'typeorm';
 import { CommandInvocation } from '../commandInvocation/commandInvocation.entity';
 import { Guild } from '../guild/guild.entity';
+import { Message } from '../message/message.entity';
 import { Report } from '../report/report.entity';
 
 @Entity()
@@ -59,4 +60,10 @@ export class GuildMember {
 
   @OneToMany(() => Report, (report) => report.reportedGuildMember)
   reports: Report[];
+
+  @OneToMany(() => Message, (message) => message.guildChannel, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  messages: Message[];
 }

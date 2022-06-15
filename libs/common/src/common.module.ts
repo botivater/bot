@@ -10,8 +10,10 @@ import { EventFlowAction } from './eventFlowAction/eventFlowAction.entity';
 import { EventFlowCondition } from './eventFlowCondition/eventFlowCondition.entity';
 import { EventFlowTrigger } from './eventFlowTrigger/eventFlowTrigger.entity';
 import { Guild } from './guild/guild.entity';
+import { GuildChannel } from './guildChannel/guildChannel.entity';
 import { GuildConfig } from './guildConfig/guildConfig.entity';
 import { GuildMember } from './guildMember/guildMember.entity';
+import { Message } from './message/message.entity';
 import { Report } from './report/report.entity';
 import { Tenant } from './tenant/tenant.entity';
 import { User } from './user/user.entity';
@@ -25,6 +27,7 @@ import { User } from './user/user.entity';
         entities: [
           Guild,
           GuildMember,
+          GuildChannel,
           GuildConfig,
           CommandList,
           CommandInvocation,
@@ -37,6 +40,7 @@ import { User } from './user/user.entity';
           EventFlowAction,
           Tenant,
           User,
+          Message,
         ],
         url: configService.getOrThrow('DATABASE_URL'),
         synchronize: false,

@@ -1,4 +1,5 @@
 import { Guild } from '@common/common/guild/guild.entity';
+import { GuildChannel } from '@common/common/guildChannel/guildChannel.entity';
 import { GuildConfig } from '@common/common/guildConfig/guildConfig.entity';
 import { GuildMember } from '@common/common/guildMember/guildMember.entity';
 import { bold, userMention } from '@discordjs/builders';
@@ -22,6 +23,8 @@ export class SyncService {
     @InjectRepository(Guild) private guildRepository: Repository<Guild>,
     @InjectRepository(GuildMember)
     private guildMemberRepository: Repository<GuildMember>,
+    @InjectRepository(GuildChannel)
+    private guildChannelRepository: Repository<GuildChannel>,
     private readonly systemMessageChannelService: SystemMessageChannelService,
   ) {
     // Manually trigger on startup
@@ -73,6 +76,30 @@ export class SyncService {
       )}]`,
     );
     await this.guildMemberRepository.save(addableGuildMembers);
+
+    await Promise.all(
+      this.discord.guilds.cache.map((discordGuild) =>
+        discordGuild.channels.fetch(),
+      ),
+    );
+
+    const removeableGuildChannels =
+      await this.compareDatabaseGuildChannelsToDiscordGuildChannels();
+    this.logger.debug(
+      `Removable guild channels: [${removeableGuildChannels.map(
+        (v) => `${v.name} (${v.snowflake})`,
+      )}]`,
+    );
+    await this.guildChannelRepository.remove(removeableGuildChannels);
+
+    const addableGuildChannels =
+      await this.compareDiscordGuildChannelsToDatabaseGuildChannels();
+    this.logger.debug(
+      `Addable guild channels: [${addableGuildChannels.map(
+        (v) => `${v.name} (${v.snowflake})`,
+      )}]`,
+    );
+    await this.guildChannelRepository.save(addableGuildChannels);
 
     await this.checkPronouns();
 
@@ -183,6 +210,76 @@ export class SyncService {
     }
 
     return addableGuildMembers;
+  }
+
+  protected async compareDatabaseGuildChannelsToDiscordGuildChannels(): Promise<
+    GuildChannel[]
+  > {
+    const removeableGuildChannels: GuildChannel[] = [];
+
+    const databaseGuilds = await this.guildRepository.find({
+      relations: {
+        guildChannels: true,
+      },
+    });
+    for (const databaseGuild of databaseGuilds) {
+      for (const databaseGuildChannel of databaseGuild.guildChannels) {
+        try {
+          const discordGuild = this.discord.guilds.cache.get(
+            databaseGuild.snowflake,
+          );
+          if (!discordGuild) throw new Error('Guild not found');
+
+          const found = discordGuild.channels.cache.get(
+            databaseGuildChannel.snowflake,
+          );
+          if (!found) removeableGuildChannels.push(databaseGuildChannel);
+        } catch (e) {
+          this.logger.error(e);
+        }
+      }
+    }
+
+    return removeableGuildChannels;
+  }
+
+  private async compareDiscordGuildChannelsToDatabaseGuildChannels(): Promise<
+    GuildChannel[]
+  > {
+    const addableGuildChannels: GuildChannel[] = [];
+
+    for await (const discordGuild of this.discord.guilds.cache.values()) {
+      try {
+        const databaseGuild = await this.guildRepository.findOne({
+          where: {
+            snowflake: discordGuild.id,
+          },
+        });
+        if (!databaseGuild) throw new Error('Database guild not found!');
+
+        for await (const discordGuildChannel of discordGuild.channels.cache.values()) {
+          const found = await this.guildChannelRepository.findOne({
+            where: {
+              snowflake: discordGuildChannel.id,
+            },
+          });
+
+          if (!found) {
+            const newGuildMember = new GuildChannel();
+            newGuildMember.snowflake = discordGuildChannel.id;
+            newGuildMember.guild = databaseGuild;
+            newGuildMember.name = discordGuildChannel.name;
+            newGuildMember.type = discordGuildChannel.type;
+
+            addableGuildChannels.push(newGuildMember);
+          }
+        }
+      } catch (e) {
+        this.logger.error(e);
+      }
+    }
+
+    return addableGuildChannels;
   }
 
   protected async checkPronouns() {

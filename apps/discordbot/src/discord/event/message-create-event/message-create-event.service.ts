@@ -1,5 +1,10 @@
+import { GuildChannel } from '@common/common/guildChannel/guildChannel.entity';
+import { GuildMember } from '@common/common/guildMember/guildMember.entity';
+import { Message } from '@common/common/message/message.entity';
 import { Injectable, Logger } from '@nestjs/common';
-import { Message } from 'discord.js';
+import { InjectRepository } from '@nestjs/typeorm';
+import discord from 'discord.js';
+import { Repository } from 'typeorm';
 import { ActivityProvider } from '../../activity-provider';
 import { Discord } from '../../discord';
 import { SyncProvider } from '../../sync-provider';
@@ -15,16 +20,37 @@ export class MessageCreateEventService {
     private readonly discord: Discord,
     private readonly activityProvider: ActivityProvider,
     private readonly syncProvider: SyncProvider,
+    @InjectRepository(GuildChannel)
+    private readonly guildChannelRepository: Repository<GuildChannel>,
+    @InjectRepository(GuildMember)
+    private readonly guildMemberRepository: Repository<GuildMember>,
+    @InjectRepository(Message)
+    private readonly messageRepository: Repository<Message>,
   ) {
     this.discord.on('messageCreate', this.handle.bind(this));
   }
 
-  public async handle(message: Message<boolean>) {
+  public async handle(message: discord.Message<boolean>) {
     try {
       if (message.partial) await message.fetch();
 
       if (message.inGuild()) {
         const { member, guild, createdTimestamp } = message;
+
+        const guildChannel = await this.guildChannelRepository.findOneBy({
+          snowflake: message.channelId,
+        });
+
+        const guildMember = await this.guildMemberRepository.findOneBy({
+          snowflake: message.member.id,
+        });
+
+        const newMessage = new Message();
+        newMessage.snowflake = message.id;
+        newMessage.content = message.content;
+        newMessage.guildChannel = guildChannel;
+        newMessage.guildMember = guildMember;
+        await this.messageRepository.save(newMessage);
 
         if (member.user.bot) return;
 
