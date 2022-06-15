@@ -44,6 +44,8 @@ import { BotService } from './bot/bot/bot.service';
 import { GenerateLoginService } from './command/generate-login/generate-login.service';
 import { User } from '@common/common/user/user.entity';
 import { Tenant } from '@common/common/tenant/tenant.entity';
+import { GuildCreateEventService } from './event/guild-create-event/guild-create-event.service';
+import { CoupleLoginService } from './command/couple-login/couple-login.service';
 
 const discordFactory = {
   provide: Discord,
@@ -104,6 +106,8 @@ const discordFactory = {
     MessageReactionRemoveEventService,
     BotService,
     GenerateLoginService,
+    GuildCreateEventService,
+    CoupleLoginService,
   ],
   exports: [discordFactory],
   controllers: [BotController],

@@ -17,7 +17,7 @@ export class GuildMemberAddEventService {
     private readonly discord: Discord,
     @InjectRepository(Guild) private guildRepository: Repository<Guild>,
   ) {
-    discord.on('guildMemberAdd', this.handle.bind(this));
+    this.discord.on('guildMemberAdd', this.handle.bind(this));
   }
 
   public async handle(member: discord.GuildMember) {
