@@ -41,6 +41,9 @@ import { MessageReactionAddEventService } from './event/message-reaction-add-eve
 import { MessageReactionRemoveEventService } from './event/message-reaction-remove-event/message-reaction-remove-event.service';
 import { BotController } from './bot/bot.controller';
 import { BotService } from './bot/bot/bot.service';
+import { GenerateLoginService } from './command/generate-login/generate-login.service';
+import { User } from '@common/common/user/user.entity';
+import { Tenant } from '@common/common/tenant/tenant.entity';
 
 const discordFactory = {
   provide: Discord,
@@ -65,6 +68,8 @@ const discordFactory = {
       CommandFlow,
       Report,
       CommandInvocation,
+      User,
+      Tenant,
     ]),
     ScheduleModule.forRoot(),
   ],
@@ -98,6 +103,7 @@ const discordFactory = {
     MessageReactionAddEventService,
     MessageReactionRemoveEventService,
     BotService,
+    GenerateLoginService,
   ],
   exports: [discordFactory],
   controllers: [BotController],

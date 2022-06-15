@@ -26,6 +26,7 @@ import { RecreateFlowsCommandService } from './recreate-flows-command/recreate-f
 import { ReportCommandService } from './report-command/report-command.service';
 import { LogUsageService } from '../log-usage/log-usage.service';
 import { Guild } from '@common/common/guild/guild.entity';
+import { GenerateLoginService } from './generate-login/generate-login.service';
 
 type Map<T> = {
   [index: string]: (interaction: T) => Promise<void> | void;
@@ -55,6 +56,7 @@ export class CommandService {
     private readonly setBirthdayCommandService: SetBirthdayCommandService,
     private readonly recreateFlowsCommandService: RecreateFlowsCommandService,
     private readonly reportCommandService: ReportCommandService,
+    private readonly generateLoginService: GenerateLoginService,
     private readonly logUsageService: LogUsageService,
   ) {
     this.rest = new REST({ version: '9' }).setToken(
@@ -69,6 +71,7 @@ export class CommandService {
     this.register(this.setBirthdayCommandService);
     this.register(this.recreateFlowsCommandService);
     this.register(this.reportCommandService);
+    this.register(this.generateLoginService);
   }
 
   public async register(command: Command) {
