@@ -25,7 +25,7 @@ export class FindAFriendCommandService implements Command {
     'Wie dit is? Mijn BFF natuurlijk!',
     '#vrienden #gezellig #bff #squadgoals',
   ];
-  private readonly amount = 358;
+  private readonly amount = 293;
 
   setup(): SlashCommandBuilder {
     return new SlashCommandBuilder()
