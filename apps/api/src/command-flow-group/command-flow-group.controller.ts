@@ -30,12 +30,16 @@ export class CommandFlowGroupController {
   findAll(@Query('guildId') guildId: string) {
     return this.commandFlowGroupService.findAll({
       where: { guild: { id: +guildId } },
+      relations: { commandFlows: true },
     });
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.commandFlowGroupService.findOne({ where: { id: +id } });
+    return this.commandFlowGroupService.findOne({
+      where: { id: +id },
+      relations: { commandFlows: true },
+    });
   }
 
   @Patch(':id')
