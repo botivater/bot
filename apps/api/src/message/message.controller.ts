@@ -39,6 +39,9 @@ export class MessageController {
       order: {
         createdAt: 'ASC',
       },
+      relations: {
+        guildMember: true,
+      },
       take: limit,
       skip: offset,
     });
