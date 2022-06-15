@@ -49,62 +49,62 @@ export class SetBirthdayCommandService implements Command {
             {
               name: 'January',
               name_localizations: { nl: 'Januari' },
-              value: 0,
+              value: 1,
             },
             {
               name: 'February',
               name_localizations: { nl: 'Februari' },
-              value: 1,
+              value: 2,
             },
             {
               name: 'March',
               name_localizations: { nl: 'Maart' },
-              value: 2,
+              value: 3,
             },
             {
               name: 'April',
               name_localizations: { nl: 'April' },
-              value: 3,
+              value: 4,
             },
             {
               name: 'May',
               name_localizations: { nl: 'Mei' },
-              value: 4,
+              value: 5,
             },
             {
               name: 'June',
               name_localizations: { nl: 'Juni' },
-              value: 5,
+              value: 6,
             },
             {
               name: 'July',
               name_localizations: { nl: 'Juli' },
-              value: 6,
+              value: 7,
             },
             {
               name: 'August',
               name_localizations: { nl: 'Augustus' },
-              value: 7,
+              value: 8,
             },
             {
               name: 'September',
               name_localizations: { nl: 'September' },
-              value: 8,
+              value: 9,
             },
             {
               name: 'October',
               name_localizations: { nl: 'Oktober' },
-              value: 9,
+              value: 10,
             },
             {
               name: 'November',
               name_localizations: { nl: 'November' },
-              value: 10,
+              value: 11,
             },
             {
               name: 'December',
               name_localizations: { nl: 'December' },
-              value: 11,
+              value: 12,
             },
           ),
       )
@@ -128,7 +128,7 @@ export class SetBirthdayCommandService implements Command {
       const month = interaction.options.getInteger('month');
       const day = interaction.options.getInteger('day');
 
-      const date = new Date(year, month, day);
+      const date = new Date(year, month - 1, day);
       this.logger.debug(`Parsed date as ${date.toDateString()}`);
 
       const dbGuildMember = await this.guildMemberRepository.findOneBy({
