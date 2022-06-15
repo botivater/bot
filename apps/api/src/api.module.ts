@@ -20,6 +20,8 @@ import { GuildMemberModule as DiscordGuildMemberModule } from './discord/guild-m
 import { GuildRoleModule as DiscordGuildRoleModule } from './discord/guild-role/guild-role.module';
 import { SpeakModule } from './discord/speak/speak.module';
 import { LoadGuildCommandsModule } from './discord/load-guild-commands/load-guild-commands.module';
+import { MessageModule } from './message/message.module';
+import { GuildChannelModule } from './guild-channel/guild-channel.module';
 
 @Module({
   imports: [
@@ -56,6 +58,8 @@ import { LoadGuildCommandsModule } from './discord/load-guild-commands/load-guil
     DiscordGuildRoleModule,
     SpeakModule,
     LoadGuildCommandsModule,
+    MessageModule,
+    GuildChannelModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],
