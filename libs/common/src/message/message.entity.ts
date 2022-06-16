@@ -26,6 +26,9 @@ export class Message {
   @Column({ type: 'text' })
   content: string;
 
+  @Column({ default: false })
+  isRemovedOnDiscord: boolean;
+
   @ManyToOne(() => GuildChannel, (guildChannel) => guildChannel.messages, {
     nullable: false,
     onDelete: 'CASCADE',

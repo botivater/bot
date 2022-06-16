@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { GuildChannelService } from './guild-channel.service';
 import { CreateGuildChannelDto } from './dto/create-guild-channel.dto';
 import { UpdateGuildChannelDto } from './dto/update-guild-channel.dto';
+import { JwtGuard } from '../auth/jwt.guard';
 
+@UseGuards(JwtGuard)
 @Controller('guild-channel')
 export class GuildChannelController {
   constructor(private readonly guildChannelService: GuildChannelService) {}

@@ -23,7 +23,7 @@ export class MessageService {
   }
 
   async findAll(options?: FindManyOptions<Message>) {
-    return await this.messageRepository.find(options);
+    return await this.messageRepository.findAndCount(options);
   }
 
   async findOne(options: FindOneOptions<Message>) {

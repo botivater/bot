@@ -13,6 +13,8 @@ import { MessageService } from './message.service';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { JwtGuard } from '../auth/jwt.guard';
+import { FindOptionsWhere } from 'typeorm';
+import { Message } from '@common/common/message/message.entity';
 
 @UseGuards(JwtGuard)
 @Controller('message')
@@ -27,20 +29,32 @@ export class MessageController {
   @Get()
   findAll(
     @Query('guildChannelId') guildChannelId: string,
+    @Query('guildMemberId') guildMemberId: string,
     @Query('limit') limit: number,
     @Query('offset') offset: number,
   ) {
+    const where: FindOptionsWhere<Message> = {};
+
+    if (+guildChannelId) {
+      where.guildChannel = {
+        id: +guildChannelId,
+      };
+    }
+
+    if (+guildMemberId) {
+      where.guildMember = {
+        id: +guildMemberId,
+      };
+    }
+
     return this.messageService.findAll({
-      where: {
-        guildChannel: {
-          id: +guildChannelId,
-        },
-      },
+      where,
       order: {
         createdAt: 'ASC',
       },
       relations: {
         guildMember: true,
+        guildChannel: true,
       },
       take: limit,
       skip: offset,

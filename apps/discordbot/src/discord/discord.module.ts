@@ -51,6 +51,8 @@ import { ChannelCreateEventService } from './event/channel-create-event/channel-
 import { ChannelUpdateEventService } from './event/channel-update-event/channel-update-event.service';
 import { ChannelDeleteEventService } from './event/channel-delete-event/channel-delete-event.service';
 import { Message } from '@common/common/message/message.entity';
+import { MessageUpdateEventService } from './event/message-update-event/message-update-event.service';
+import { MessageDeleteEventService } from './event/message-delete-event/message-delete-event.service';
 
 const discordFactory = {
   provide: Discord,
@@ -118,6 +120,8 @@ const discordFactory = {
     ChannelCreateEventService,
     ChannelUpdateEventService,
     ChannelDeleteEventService,
+    MessageUpdateEventService,
+    MessageDeleteEventService,
   ],
   exports: [discordFactory],
   controllers: [BotController],

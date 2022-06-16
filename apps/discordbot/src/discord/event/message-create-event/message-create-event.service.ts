@@ -55,10 +55,7 @@ export class MessageCreateEventService {
         if (member.user.bot) return;
 
         const dbGuild = await this.syncProvider.guild(guild);
-        const dbGuildMember = await this.syncProvider.guildMember(
-          dbGuild,
-          member,
-        );
+        await this.syncProvider.guildMember(dbGuild, member);
 
         await this.activityProvider.register({
           guildSnowflake: guild.id,
