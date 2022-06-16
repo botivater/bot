@@ -48,4 +48,7 @@ export class GuildConfig {
     activeRoleId: string;
     inactiveUserSeconds: number;
   };
+
+  @Column({ default: false })
+  isOpenAIEnabled: boolean;
 }

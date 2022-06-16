@@ -11,6 +11,9 @@ import {
 } from 'discord.js';
 import { Command } from '../command.interface';
 import { Configuration, OpenAIApi } from 'openai';
+import { InjectRepository } from '@nestjs/typeorm';
+import { GuildConfig } from '@common/common/guildConfig/guildConfig.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class QAndAService implements Command {
@@ -21,7 +24,11 @@ export class QAndAService implements Command {
   /**
    *
    */
-  constructor(private readonly configService: ConfigService) {
+  constructor(
+    private readonly configService: ConfigService,
+    @InjectRepository(GuildConfig)
+    private readonly guildConfigRepository: Repository<GuildConfig>,
+  ) {
     this.configuration = new Configuration({
       apiKey: this.configService.getOrThrow('OPENAI_API_KEY'),
     });
@@ -55,6 +62,20 @@ export class QAndAService implements Command {
     try {
       const question = interaction.options.getString('question');
       if (!question) throw new Error('No question provided');
+
+      const guildConfig = await this.guildConfigRepository.findOneOrFail({
+        where: {
+          guild: {
+            snowflake: interaction.guildId,
+          },
+        },
+      });
+      if (!guildConfig.isOpenAIEnabled) {
+        await interaction.editReply(
+          `OpenAI is not enabled for this server at this time`,
+        );
+        return;
+      }
 
       const response = await this.openAiApi.createCompletion({
         model: 'text-curie-001',
