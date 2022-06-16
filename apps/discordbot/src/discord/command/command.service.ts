@@ -28,6 +28,7 @@ import { GenerateLoginService } from './generate-login/generate-login.service';
 import { CoupleLoginService } from './couple-login/couple-login.service';
 import { LogUsageService } from '../log-usage/log-usage.service';
 import { Guild } from '@common/common/guild/guild.entity';
+import { QAndAService } from './q-and-a/q-and-a.service';
 
 type Map<T> = {
   [index: string]: (interaction: T) => Promise<void> | void;
@@ -59,6 +60,7 @@ export class CommandService {
     private readonly reportCommandService: ReportCommandService,
     private readonly generateLoginService: GenerateLoginService,
     private readonly coupleLoginService: CoupleLoginService,
+    private readonly qAndAService: QAndAService,
     private readonly logUsageService: LogUsageService,
   ) {
     this.rest = new REST({ version: '9' }).setToken(
@@ -75,6 +77,7 @@ export class CommandService {
     this.register(this.reportCommandService);
     this.register(this.generateLoginService);
     this.register(this.coupleLoginService);
+    this.register(this.qAndAService);
   }
 
   public async register(command: Command) {

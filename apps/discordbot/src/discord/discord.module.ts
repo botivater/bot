@@ -53,6 +53,7 @@ import { ChannelDeleteEventService } from './event/channel-delete-event/channel-
 import { Message } from '@common/common/message/message.entity';
 import { MessageUpdateEventService } from './event/message-update-event/message-update-event.service';
 import { MessageDeleteEventService } from './event/message-delete-event/message-delete-event.service';
+import { QAndAService } from './command/q-and-a/q-and-a.service';
 
 const discordFactory = {
   provide: Discord,
@@ -122,6 +123,7 @@ const discordFactory = {
     ChannelDeleteEventService,
     MessageUpdateEventService,
     MessageDeleteEventService,
+    QAndAService,
   ],
   exports: [discordFactory],
   controllers: [BotController],
