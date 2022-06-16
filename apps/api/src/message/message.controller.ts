@@ -30,6 +30,7 @@ export class MessageController {
   findAll(
     @Query('guildChannelId') guildChannelId: string,
     @Query('guildMemberId') guildMemberId: string,
+    @Query('isRemovedOnDiscord') isRemovedOnDiscord: string,
     @Query('limit') limit: number,
     @Query('offset') offset: number,
   ) {
@@ -45,6 +46,10 @@ export class MessageController {
       where.guildMember = {
         id: +guildMemberId,
       };
+    }
+
+    if (isRemovedOnDiscord) {
+      where.isRemovedOnDiscord = isRemovedOnDiscord === 'true';
     }
 
     return this.messageService.findAll({
