@@ -8,7 +8,8 @@
     "webpack": true,
     "tsConfigPath": "apps/bot/tsconfig.app.json",
     "watchAssets": true,
-    "assets": ["**/*.proto"]
+    "assets": ["**/*.proto"],
+    "plugins": ["@nestjs/swagger/plugin"]
   },
   "projects": {
     "bot": {
