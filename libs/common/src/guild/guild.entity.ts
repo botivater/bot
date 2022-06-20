@@ -7,6 +7,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { CommandFlowGroup } from '../commandFlowGroup/commandFlowGroup.entity';
@@ -48,6 +49,9 @@ export class Guild {
   })
   @JoinColumn()
   guildConfig: GuildConfig;
+
+  @RelationId((guild: Guild) => guild.guildConfig)
+  guildConfigId?: number;
 
   @OneToMany(() => CommandList, (commandList) => commandList.guild)
   commandLists: CommandList[];
