@@ -11,7 +11,9 @@ describe('LoadGuildCommandsController', () => {
       providers: [LoadGuildCommandsService],
     }).compile();
 
-    controller = module.get<LoadGuildCommandsController>(LoadGuildCommandsController);
+    controller = module.get<LoadGuildCommandsController>(
+      LoadGuildCommandsController,
+    );
   });
 
   it('should be defined', () => {

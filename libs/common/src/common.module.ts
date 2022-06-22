@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CommandAlias } from './commandAlias/commandAlias.entity';
 import { CommandFlow } from './commandFlow/commandFlow.entity';
 import { CommandFlowGroup } from './commandFlowGroup/commandFlowGroup.entity';
 import { CommandInvocation } from './commandInvocation/commandInvocation.entity';
@@ -41,6 +42,7 @@ import { User } from './user/user.entity';
           Tenant,
           User,
           Message,
+          CommandAlias,
         ],
         url: configService.getOrThrow('DATABASE_URL'),
         synchronize: false,

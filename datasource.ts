@@ -14,6 +14,7 @@ import { EventFlowAction } from './libs/common/src/eventFlowAction/eventFlowActi
 import { Tenant } from './libs/common/src/tenant/tenant.entity';
 import { User } from './libs/common/src/user/user.entity';
 import { Message } from './libs/common/src/message/message.entity';
+import { CommandAlias } from './libs/common/src/commandAlias/commandAlias.entity';
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
 
@@ -37,6 +38,7 @@ export const AppDataSource = new DataSource({
     Tenant,
     User,
     Message,
+    CommandAlias,
   ],
   migrations: [`${__dirname}/migrations/*.ts`],
 });

@@ -19,6 +19,7 @@ import { GuildMember } from '../guildMember/guildMember.entity';
 import { GuildChannel } from '../guildChannel/guildChannel.entity';
 import { Report } from '../report/report.entity';
 import { Tenant } from '../tenant/tenant.entity';
+import { CommandAlias } from '../commandAlias/commandAlias.entity';
 
 @Entity()
 export class Guild {
@@ -76,4 +77,7 @@ export class Guild {
 
   @OneToMany(() => Report, (report) => report.guild)
   reports: Report[];
+
+  @OneToMany(() => CommandAlias, (commandAlias) => commandAlias.guild)
+  commandAliases: CommandAlias[];
 }
