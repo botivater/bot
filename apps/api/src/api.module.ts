@@ -22,6 +22,7 @@ import { SpeakModule } from './discord/speak/speak.module';
 import { LoadGuildCommandsModule } from './discord/load-guild-commands/load-guild-commands.module';
 import { MessageModule } from './message/message.module';
 import { GuildChannelModule } from './guild-channel/guild-channel.module';
+import { CommandAliasModule } from './command-alias/command-alias.module';
 
 @Module({
   imports: [
@@ -60,6 +61,7 @@ import { GuildChannelModule } from './guild-channel/guild-channel.module';
     LoadGuildCommandsModule,
     MessageModule,
     GuildChannelModule,
+    CommandAliasModule,
   ],
   controllers: [ApiController],
   providers: [ApiService],
