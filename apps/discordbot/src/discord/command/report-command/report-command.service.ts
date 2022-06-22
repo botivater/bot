@@ -9,18 +9,16 @@ import {
 } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
+import { CommandInteraction, CacheType } from 'discord.js';
 import { Repository } from 'typeorm';
 import { Discord } from '../../discord';
-import { Command } from '../command.interface';
+import { Command } from '../command';
 
 @Injectable()
-export class ReportCommandService implements Command {
+export class ReportCommandService extends Command {
   private readonly logger = new Logger(ReportCommandService.name);
+
+  public COMMAND_NAME = 'report';
 
   /**
    *
@@ -33,9 +31,11 @@ export class ReportCommandService implements Command {
     @InjectRepository(Report)
     private reportRepository: Repository<Report>,
     private readonly discord: Discord,
-  ) {}
+  ) {
+    super();
+  }
 
-  setup(): SlashCommandBuilder {
+  public setup(): SlashCommandBuilder {
     return <SlashCommandBuilder>new SlashCommandBuilder()
       .setName('report')
       .setDescription(
@@ -75,7 +75,7 @@ export class ReportCommandService implements Command {
       );
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
@@ -165,11 +165,5 @@ export class ReportCommandService implements Command {
       this.logger.error(err);
       await interaction.editReply('An error has occurred.');
     }
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }

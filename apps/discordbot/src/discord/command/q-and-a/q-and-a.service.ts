@@ -4,22 +4,20 @@ import {
 } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
-import { Command } from '../command.interface';
+import { CommandInteraction, CacheType } from 'discord.js';
+import { Command } from '../command';
 import { Configuration, OpenAIApi } from 'openai';
 import { InjectRepository } from '@nestjs/typeorm';
 import { GuildConfig } from '@common/common/guildConfig/guildConfig.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
-export class QAndAService implements Command {
+export class QAndAService extends Command {
   private readonly logger = new Logger(QAndAService.name);
   private readonly configuration: Configuration;
   private readonly openAiApi: OpenAIApi;
+
+  public COMMAND_NAME = 'q-and-a';
 
   /**
    *
@@ -29,6 +27,7 @@ export class QAndAService implements Command {
     @InjectRepository(GuildConfig)
     private readonly guildConfigRepository: Repository<GuildConfig>,
   ) {
+    super();
     this.configuration = new Configuration({
       apiKey: this.configService.getOrThrow('OPENAI_API_KEY'),
     });
@@ -36,7 +35,7 @@ export class QAndAService implements Command {
     this.openAiApi = new OpenAIApi(this.configuration);
   }
 
-  setup(): SlashCommandBuilder {
+  public setup(): SlashCommandBuilder {
     const questionOption = (builder: SlashCommandStringOption) =>
       builder
         .setName('question')
@@ -54,7 +53,7 @@ export class QAndAService implements Command {
       .setDefaultPermission(false);
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply();
@@ -125,11 +124,5 @@ export class QAndAService implements Command {
       this.logger.error(err);
       await interaction.editReply(err);
     }
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }

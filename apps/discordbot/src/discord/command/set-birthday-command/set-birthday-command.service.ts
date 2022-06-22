@@ -2,17 +2,15 @@ import { GuildMember } from '@common/common/guildMember/guildMember.entity';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
+import { CommandInteraction, CacheType } from 'discord.js';
 import { Repository } from 'typeorm';
-import { Command } from '../command.interface';
+import { Command } from '../command';
 
 @Injectable()
-export class SetBirthdayCommandService implements Command {
+export class SetBirthdayCommandService extends Command {
   private readonly logger = new Logger(SetBirthdayCommandService.name);
+
+  public COMMAND_NAME = 'set-birthday';
 
   /**
    *
@@ -20,9 +18,11 @@ export class SetBirthdayCommandService implements Command {
   constructor(
     @InjectRepository(GuildMember)
     private guildMemberRepository: Repository<GuildMember>,
-  ) {}
+  ) {
+    super();
+  }
 
-  setup(): SlashCommandBuilder {
+  public setup(): SlashCommandBuilder {
     return <SlashCommandBuilder>new SlashCommandBuilder()
       .setName('set-birthday')
       .setNameLocalization('nl', 'verjaardag-instellen')
@@ -118,7 +118,7 @@ export class SetBirthdayCommandService implements Command {
       );
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
@@ -154,11 +154,5 @@ export class SetBirthdayCommandService implements Command {
       this.logger.error(err);
       await interaction.editReply('An error occurred.');
     }
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }

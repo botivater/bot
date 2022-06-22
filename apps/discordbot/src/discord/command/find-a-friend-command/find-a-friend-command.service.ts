@@ -1,14 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
-import { Command } from '../command.interface';
+import { CommandInteraction, CacheType } from 'discord.js';
+import { Command } from '../command';
 
 @Injectable()
-export class FindAFriendCommandService implements Command {
+export class FindAFriendCommandService extends Command {
   private readonly logger = new Logger(FindAFriendCommandService.name);
   private readonly options = [
     'Ik kwam vandaag deze knapperd tegen!',
@@ -27,14 +23,16 @@ export class FindAFriendCommandService implements Command {
   ];
   private readonly amount = 293;
 
-  setup(): SlashCommandBuilder {
+  public COMMAND_NAME = 'vindeenvriendje';
+
+  public setup(): SlashCommandBuilder {
     return new SlashCommandBuilder()
       .setName('vindeenvriendje')
       .setDescription('Laat de bot een vriendje tonen!')
       .setDefaultPermission(false);
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply();
@@ -58,11 +56,5 @@ export class FindAFriendCommandService implements Command {
       this.logger.error(err);
       await interaction.editReply('An error has occurred!');
     }
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }

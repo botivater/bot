@@ -12,7 +12,7 @@ import {
   ModalSubmitInteraction,
 } from 'discord.js';
 import { Discord } from '../discord';
-import { Command } from './command.interface';
+import { Command } from './command';
 import { PingCommandService } from './ping-command/ping-command.service';
 import { Repository } from 'typeorm';
 import { CommandList } from '@common/common/commandList/commandList.entity';
@@ -22,7 +22,6 @@ import { ToneIndicatorCommandService } from './tone-indicator-command/tone-indic
 import { FindAFriendCommandService } from './find-a-friend-command/find-a-friend-command.service';
 import { HelpCommandService } from './help-command/help-command.service';
 import { SetBirthdayCommandService } from './set-birthday-command/set-birthday-command.service';
-import { RecreateFlowsCommandService } from './recreate-flows-command/recreate-flows-command.service';
 import { ReportCommandService } from './report-command/report-command.service';
 import { GenerateLoginService } from './generate-login/generate-login.service';
 import { CoupleLoginService } from './couple-login/couple-login.service';
@@ -30,18 +29,13 @@ import { LogUsageService } from '../log-usage/log-usage.service';
 import { Guild } from '@common/common/guild/guild.entity';
 import { QAndAService } from './q-and-a/q-and-a.service';
 import { AskAiService } from './ask-ai/ask-ai.service';
-
-type Map<T> = {
-  [index: string]: (interaction: T) => Promise<void> | void;
-};
+import { CommandAlias } from '@common/common/commandAlias/commandAlias.entity';
 
 @Injectable()
 export class CommandService {
   private readonly logger = new Logger(CommandService.name);
-  private commandMap: Map<CommandInteraction<CacheType>> = {};
-  private modalSubmitMap: Map<ModalSubmitInteraction<CacheType>> = {};
-  private restCommandArray: RESTPostAPIApplicationCommandsJSONBody[] = [];
   private readonly rest: REST;
+  private readonly commandArray: Command[] = [];
 
   /**
    *
@@ -49,6 +43,8 @@ export class CommandService {
   constructor(
     private readonly configService: ConfigService,
     private readonly discord: Discord,
+    @InjectRepository(CommandAlias)
+    private commandAliasRepository: Repository<CommandAlias>,
     @InjectRepository(CommandList)
     private commandListRepository: Repository<CommandList>,
     private readonly pingCommandService: PingCommandService,
@@ -57,7 +53,6 @@ export class CommandService {
     private readonly findAFriendCommandService: FindAFriendCommandService,
     private readonly helpCommandService: HelpCommandService,
     private readonly setBirthdayCommandService: SetBirthdayCommandService,
-    private readonly recreateFlowsCommandService: RecreateFlowsCommandService,
     private readonly reportCommandService: ReportCommandService,
     private readonly generateLoginService: GenerateLoginService,
     private readonly coupleLoginService: CoupleLoginService,
@@ -69,26 +64,17 @@ export class CommandService {
       this.configService.getOrThrow('BOT_TOKEN'),
     );
 
-    this.register(this.pingCommandService);
-    this.register(this.devCommandService);
-    this.register(this.toneIndicatorCommandService);
-    this.register(this.findAFriendCommandService);
-    this.register(this.helpCommandService);
-    this.register(this.setBirthdayCommandService);
-    this.register(this.recreateFlowsCommandService);
-    this.register(this.reportCommandService);
-    this.register(this.generateLoginService);
-    this.register(this.coupleLoginService);
-    this.register(this.qAndAService);
-    this.register(this.askAiService);
-  }
-
-  public async register(command: Command) {
-    const slashCommand = command.setup();
-    this.restCommandArray.push(slashCommand.toJSON());
-    this.commandMap[slashCommand.name] = command.handleCommand.bind(command);
-    this.modalSubmitMap[slashCommand.name] =
-      command.handleModalSubmit.bind(command);
+    this.commandArray.push(this.pingCommandService);
+    this.commandArray.push(this.devCommandService);
+    this.commandArray.push(this.toneIndicatorCommandService);
+    this.commandArray.push(this.findAFriendCommandService);
+    this.commandArray.push(this.helpCommandService);
+    this.commandArray.push(this.setBirthdayCommandService);
+    this.commandArray.push(this.reportCommandService);
+    this.commandArray.push(this.generateLoginService);
+    this.commandArray.push(this.coupleLoginService);
+    this.commandArray.push(this.qAndAService);
+    this.commandArray.push(this.askAiService);
   }
 
   public async putGuildsCommands(guilds: Guild[]) {
@@ -96,7 +82,26 @@ export class CommandService {
   }
 
   public async putGuildCommands(guild: Guild) {
-    const restCommandArrayCopy = [...this.restCommandArray];
+    const restCommandArray: RESTPostAPIApplicationCommandsJSONBody[] = [];
+
+    const commandAliases = await this.commandAliasRepository.findBy({
+      guild: {
+        id: guild.id,
+      },
+    });
+
+    for (const commandAlias of commandAliases) {
+      const command = this.commandArray.find(
+        (command) => command.COMMAND_NAME === commandAlias.internalName,
+      );
+
+      if (command) {
+        const setupCommand = command.setup();
+        setupCommand.setName(commandAlias.commandName);
+
+        restCommandArray.push(setupCommand.toJSON());
+      }
+    }
 
     const commandLists = await this.commandListRepository.findBy({
       guild: {
@@ -110,7 +115,7 @@ export class CommandService {
         .setDescription(commandList.description)
         .setDefaultPermission(true);
 
-      restCommandArrayCopy.push(command.toJSON());
+      restCommandArray.push(command.toJSON());
     }
 
     await this.rest.put(
@@ -119,7 +124,7 @@ export class CommandService {
         guild.snowflake,
       ),
       {
-        body: restCommandArrayCopy,
+        body: restCommandArray,
       },
     );
   }
@@ -133,9 +138,22 @@ export class CommandService {
       this.logUsageService.logInteraction(interaction);
 
       // Firstly check all of the static commands, they must always be the first in order.
-      if (this.commandMap.hasOwnProperty(commandName)) {
-        this.commandMap[commandName](interaction);
-        return;
+      const dbCommandAlias = await this.commandAliasRepository.findOneBy({
+        guild: {
+          snowflake: guild.id,
+        },
+        commandName,
+      });
+
+      if (dbCommandAlias) {
+        const command = this.commandArray.find(
+          (command) => command.COMMAND_NAME === dbCommandAlias.internalName,
+        );
+
+        if (command) {
+          await command.handleCommand(interaction);
+          return;
+        }
       }
 
       // Next, check the database flows.
@@ -183,10 +201,15 @@ export class CommandService {
 
       this.logger.debug(`Handling modal submit: ${customId}`);
 
-      // Firstly check all of the static commands, they must always be the first in order.
-      if (this.modalSubmitMap.hasOwnProperty(customId)) {
-        this.modalSubmitMap[customId](interaction);
-        return;
+      if (customId) {
+        const command = this.commandArray.find(
+          (command) => command.COMMAND_NAME === customId,
+        );
+
+        if (command) {
+          await command.handleModalSubmit(interaction);
+          return;
+        }
       }
 
       throw new Error(

@@ -22,7 +22,6 @@ import { FindAFriendCommandService } from './command/find-a-friend-command/find-
 import { HelpCommandService } from './command/help-command/help-command.service';
 import { SetBirthdayCommandService } from './command/set-birthday-command/set-birthday-command.service';
 import { ReportCommandService } from './command/report-command/report-command.service';
-import { RecreateFlowsCommandService } from './command/recreate-flows-command/recreate-flows-command.service';
 import { CommandFlow } from '@common/common/commandFlow/commandFlow.entity';
 import { CommandFlowGroup } from '@common/common/commandFlowGroup/commandFlowGroup.entity';
 import { Report } from '@common/common/report/report.entity';
@@ -55,6 +54,7 @@ import { MessageUpdateEventService } from './event/message-update-event/message-
 import { MessageDeleteEventService } from './event/message-delete-event/message-delete-event.service';
 import { QAndAService } from './command/q-and-a/q-and-a.service';
 import { AskAiService } from './command/ask-ai/ask-ai.service';
+import { CommandAlias } from '@common/common/commandAlias/commandAlias.entity';
 
 const discordFactory = {
   provide: Discord,
@@ -83,6 +83,7 @@ const discordFactory = {
       User,
       Tenant,
       Message,
+      CommandAlias,
     ]),
     ScheduleModule.forRoot(),
   ],
@@ -103,7 +104,6 @@ const discordFactory = {
     HelpCommandService,
     SetBirthdayCommandService,
     ReportCommandService,
-    RecreateFlowsCommandService,
     LogUsageService,
     BirthdayService,
     SyncService,

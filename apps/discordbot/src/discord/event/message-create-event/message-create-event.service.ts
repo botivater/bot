@@ -37,6 +37,8 @@ export class MessageCreateEventService {
       if (message.inGuild()) {
         const { member, guild, createdTimestamp } = message;
 
+        if (member.user.bot) return;
+
         const guildChannel = await this.guildChannelRepository.findOneBy({
           snowflake: message.channelId,
         });
@@ -51,8 +53,6 @@ export class MessageCreateEventService {
         newMessage.guildChannel = guildChannel;
         newMessage.guildMember = guildMember;
         await this.messageRepository.save(newMessage);
-
-        if (member.user.bot) return;
 
         const dbGuild = await this.syncProvider.guild(guild);
         await this.syncProvider.guildMember(dbGuild, member);

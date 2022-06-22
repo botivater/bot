@@ -37,6 +37,8 @@ export class MessageUpdateEventService {
       if (newMessage.inGuild()) {
         const { member, channelId, createdAt, content } = newMessage;
 
+        if (member.user.bot) return;
+
         const foundMessage = await this.messageRepository.findOne({
           where: { snowflake: oldMessage.id },
         });

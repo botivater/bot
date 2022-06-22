@@ -7,17 +7,15 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
+import { CommandInteraction, CacheType } from 'discord.js';
 import { Repository, In } from 'typeorm';
-import { Command } from '../command.interface';
+import { Command } from '../command';
 
 @Injectable()
-export class CoupleLoginService implements Command {
+export class CoupleLoginService extends Command {
   private readonly logger = new Logger(CoupleLoginService.name);
+
+  public COMMAND_NAME = 'couple-login';
 
   /**
    *
@@ -27,9 +25,11 @@ export class CoupleLoginService implements Command {
     @InjectRepository(Tenant)
     private readonly tenantRepository: Repository<Tenant>,
     private readonly configService: ConfigService,
-  ) {}
+  ) {
+    super();
+  }
 
-  setup(): SlashCommandBuilder {
+  public setup(): SlashCommandBuilder {
     const emailOption = (builder: SlashCommandStringOption) =>
       builder
         .setName('email')
@@ -47,7 +47,7 @@ export class CoupleLoginService implements Command {
       .setDefaultPermission(false);
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({
@@ -80,11 +80,5 @@ export class CoupleLoginService implements Command {
       this.logger.error(err);
       await interaction.editReply('Something went wrong.');
     }
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }

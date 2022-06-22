@@ -6,20 +6,18 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
+import { CommandInteraction, CacheType } from 'discord.js';
 import { Configuration, OpenAIApi } from 'openai';
 import { Repository } from 'typeorm';
-import { Command } from '../command.interface';
+import { Command } from '../command';
 
 @Injectable()
-export class AskAiService implements Command {
+export class AskAiService extends Command {
   private readonly logger = new Logger(AskAiService.name);
   private readonly configuration: Configuration;
   private readonly openAiApi: OpenAIApi;
+
+  public COMMAND_NAME = 'ask-ai';
 
   /**
    *
@@ -29,6 +27,7 @@ export class AskAiService implements Command {
     @InjectRepository(GuildConfig)
     private readonly guildConfigRepository: Repository<GuildConfig>,
   ) {
+    super();
     this.configuration = new Configuration({
       apiKey: this.configService.getOrThrow('OPENAI_API_KEY'),
     });
@@ -36,7 +35,7 @@ export class AskAiService implements Command {
     this.openAiApi = new OpenAIApi(this.configuration);
   }
 
-  setup(): SlashCommandBuilder {
+  public setup(): SlashCommandBuilder {
     const questionOption = (builder: SlashCommandStringOption) =>
       builder
         .setName('question')
@@ -54,7 +53,7 @@ export class AskAiService implements Command {
       .setDefaultPermission(false);
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply();
@@ -100,11 +99,5 @@ export class AskAiService implements Command {
       this.logger.error(err);
       await interaction.editReply(err);
     }
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }

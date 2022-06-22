@@ -1,11 +1,7 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
-import { Command } from '../command.interface';
+import { CommandInteraction, CacheType } from 'discord.js';
+import { Command } from '../command';
 
 export enum HelpCommandEnum {
   REPORT = 'report',
@@ -13,10 +9,12 @@ export enum HelpCommandEnum {
 }
 
 @Injectable()
-export class HelpCommandService implements Command {
+export class HelpCommandService extends Command {
   private readonly logger = new Logger(HelpCommandService.name);
 
-  setup(): SlashCommandBuilder {
+  public COMMAND_NAME = 'help';
+
+  public setup(): SlashCommandBuilder {
     return <SlashCommandBuilder>new SlashCommandBuilder()
       .setName('help')
       .setDescription(
@@ -38,7 +36,7 @@ export class HelpCommandService implements Command {
       );
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
@@ -67,11 +65,5 @@ export class HelpCommandService implements Command {
       this.logger.error(err);
       await interaction.editReply('An error has occurred.');
     }
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }

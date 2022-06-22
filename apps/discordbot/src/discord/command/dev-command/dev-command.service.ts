@@ -1,22 +1,20 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable } from '@nestjs/common';
-import {
-  CommandInteraction,
-  CacheType,
-  ModalSubmitInteraction,
-} from 'discord.js';
-import { Command } from '../command.interface';
+import { CommandInteraction, CacheType } from 'discord.js';
+import { Command } from '../command';
 
 @Injectable()
-export class DevCommandService implements Command {
-  setup(): SlashCommandBuilder {
+export class DevCommandService extends Command {
+  public COMMAND_NAME = 'dev';
+
+  public setup(): SlashCommandBuilder {
     return new SlashCommandBuilder()
       .setName('dev')
       .setDescription('Informatie over de ontwikkelaar.')
       .setDefaultPermission(true);
   }
 
-  async handleCommand(
+  public async handleCommand(
     interaction: CommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply();
@@ -32,11 +30,5 @@ export class DevCommandService implements Command {
     await interaction.editReply({
       content,
     });
-  }
-
-  async handleModalSubmit(
-    interaction: ModalSubmitInteraction<CacheType>,
-  ): Promise<void> {
-    throw new Error('Method not implemented.');
   }
 }
