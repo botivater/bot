@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { Guild } from '../guild/guild.entity';
@@ -25,6 +26,9 @@ export class Report {
   })
   guildMember: GuildMember;
 
+  @RelationId((report: Report) => report.guildMember)
+  guildMemberId: number;
+
   @Column({ type: 'varchar', length: 64, nullable: true })
   channelId: string;
 
@@ -36,6 +40,9 @@ export class Report {
   })
   reportedGuildMember: GuildMember;
 
+  @RelationId((report: Report) => report.reportedGuildMember)
+  reportedGuildMemberId: number;
+
   @Column({ default: true })
   anonymous: boolean;
 
@@ -44,4 +51,7 @@ export class Report {
 
   @ManyToOne(() => Guild, (guild) => guild.reports)
   guild: Guild;
+
+  @RelationId((report: Report) => report.guild)
+  guildId: number;
 }

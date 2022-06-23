@@ -4,6 +4,7 @@ import {
   Entity,
   OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { Guild } from '../guild/guild.entity';
@@ -23,6 +24,9 @@ export class GuildConfig {
     nullable: false,
   })
   guild: Guild;
+
+  @RelationId((guildConfig: GuildConfig) => guildConfig.guild)
+  guildId: number;
 
   @Column({ type: 'varchar', length: 64, nullable: false })
   systemChannelId: string;

@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { EventFlow } from '../eventFlow/eventFlow.entity';
@@ -30,6 +31,9 @@ export class EventFlowAction {
     onDelete: 'CASCADE',
   })
   eventFlow: EventFlow;
+
+  @RelationId((eventFlowAction: EventFlowAction) => eventFlowAction.eventFlow)
+  eventFlowId: number;
 
   @Column({
     type: 'enum',

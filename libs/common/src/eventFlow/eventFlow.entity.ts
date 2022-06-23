@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { EventFlowAction } from '../eventFlowAction/eventFlowAction.entity';
@@ -25,6 +26,9 @@ export class EventFlow {
 
   @ManyToOne(() => Guild, (guild) => guild.eventFlows, { onDelete: 'CASCADE' })
   guild: Guild;
+
+  @RelationId((eventFlow: EventFlow) => eventFlow.guild)
+  guildId: number;
 
   @Column()
   name: string;

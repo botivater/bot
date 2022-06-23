@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { Guild } from '../guild/guild.entity';
@@ -25,12 +26,20 @@ export class CommandInvocation {
   })
   guild: Guild;
 
+  @RelationId((commandInvocation: CommandInvocation) => commandInvocation.guild)
+  guildId: number;
+
   @ManyToOne(
     () => GuildMember,
     (guildMember) => guildMember.commandInvocations,
     { onDelete: 'SET NULL' },
   )
   guildMember: GuildMember;
+
+  @RelationId(
+    (commandInvocation: CommandInvocation) => commandInvocation.guildMember,
+  )
+  guildMemberId: number;
 
   @Column()
   commandName: string;

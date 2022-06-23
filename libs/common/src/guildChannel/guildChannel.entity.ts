@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
   Unique,
   UpdateDateColumn,
 } from 'typeorm';
@@ -37,6 +38,9 @@ export class GuildChannel {
     onDelete: 'CASCADE',
   })
   guild: Guild;
+
+  @RelationId((guildChannel: GuildChannel) => guildChannel.guild)
+  guildId: number;
 
   @OneToMany(() => Message, (message) => message.guildChannel, {
     nullable: false,

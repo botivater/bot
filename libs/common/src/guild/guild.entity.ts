@@ -75,6 +75,9 @@ export class Guild {
   @ManyToOne(() => Tenant, (tenant) => tenant.guilds)
   tenant: Tenant;
 
+  @RelationId((guild: Guild) => guild.tenant)
+  tenantId: number;
+
   @OneToMany(() => Report, (report) => report.guild)
   reports: Report[];
 

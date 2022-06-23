@@ -5,6 +5,7 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { CommandFlow } from '../commandFlow/commandFlow.entity';
@@ -25,6 +26,9 @@ export class CommandFlowGroup {
     onDelete: 'CASCADE',
   })
   guild: Guild;
+
+  @RelationId((commandFlowGroup: CommandFlowGroup) => commandFlowGroup.guild)
+  guildId: number;
 
   @Column()
   name: string;

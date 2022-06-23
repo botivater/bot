@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { Guild } from '../guild/guild.entity';
@@ -33,4 +34,7 @@ export class CommandList {
     onDelete: 'CASCADE',
   })
   guild: Guild;
+
+  @RelationId((commandList: CommandList) => commandList.guild)
+  guildId: number;
 }

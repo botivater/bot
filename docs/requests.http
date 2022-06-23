@@ -1,0 +1,39 @@
+@endpoint = http://localhost:3000
+
+###
+# @name authLogin
+# @prompt email
+# @prompt password
+POST {{endpoint}}/auth/login HTTP/1.1
+Content-Type: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+###
+
+@jwtToken = {{ authLogin.response.body.access_token }}
+
+###
+# @name authMe
+GET {{endpoint}}/auth/me HTTP/1.1
+Authorization: Bearer {{ jwtToken }}
+
+###
+# @name getAllCommandAliases
+GET {{endpoint}}/v1/command-alias?guildId=1 HTTP/1.1
+Authorization: Bearer {{ jwtToken }}
+
+###
+# @name createCommandAlias
+POST {{endpoint}}/v1/command-alias HTTP/1.1
+Authorization: Bearer {{ jwtToken }}
+Content-Type: application/json
+
+{
+  "commandName": "tester",
+  "internalName": "dev",
+  "guildId": 1
+}

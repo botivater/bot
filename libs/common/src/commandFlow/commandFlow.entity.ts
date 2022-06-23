@@ -4,6 +4,7 @@ import {
   Entity,
   ManyToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
 import { CommandFlowGroup } from '../commandFlowGroup/commandFlowGroup.entity';
@@ -27,6 +28,9 @@ export class CommandFlow {
     },
   )
   commandFlowGroup: CommandFlowGroup;
+
+  @RelationId((commandFlow: CommandFlow) => commandFlow.commandFlowGroup)
+  commandFlowGroupId: number;
 
   @Column({ type: 'tinyint' })
   onType: number;
