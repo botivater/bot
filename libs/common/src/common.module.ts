@@ -15,6 +15,7 @@ import { GuildChannel } from './guildChannel/guildChannel.entity';
 import { GuildConfig } from './guildConfig/guildConfig.entity';
 import { GuildMember } from './guildMember/guildMember.entity';
 import { Message } from './message/message.entity';
+import { OpenAIUsage } from './openAIUsage/openAIUsage.entity';
 import { Report } from './report/report.entity';
 import { Tenant } from './tenant/tenant.entity';
 import { User } from './user/user.entity';
@@ -43,6 +44,7 @@ import { User } from './user/user.entity';
           User,
           Message,
           CommandAlias,
+          OpenAIUsage,
         ],
         url: configService.getOrThrow('DATABASE_URL'),
         synchronize: false,

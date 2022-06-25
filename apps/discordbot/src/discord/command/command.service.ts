@@ -30,6 +30,7 @@ import { Guild } from '@common/common/guild/guild.entity';
 import { QAndAService } from './q-and-a/q-and-a.service';
 import { AskAiService } from './ask-ai/ask-ai.service';
 import { CommandAlias } from '@common/common/commandAlias/commandAlias.entity';
+import { ChatAiReplyService } from './chat-ai-reply/chat-ai-reply.service';
 
 @Injectable()
 export class CommandService {
@@ -58,6 +59,7 @@ export class CommandService {
     private readonly coupleLoginService: CoupleLoginService,
     private readonly qAndAService: QAndAService,
     private readonly askAiService: AskAiService,
+    private readonly chatAiReplyService: ChatAiReplyService,
     private readonly logUsageService: LogUsageService,
   ) {
     this.rest = new REST({ version: '9' }).setToken(
@@ -75,6 +77,7 @@ export class CommandService {
     this.commandArray.push(this.coupleLoginService);
     this.commandArray.push(this.qAndAService);
     this.commandArray.push(this.askAiService);
+    this.commandArray.push(this.chatAiReplyService);
   }
 
   public async putGuildsCommands(guilds: Guild[]) {

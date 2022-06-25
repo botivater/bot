@@ -2,26 +2,24 @@ import { Guild } from '@common/common/guild/guild.entity';
 import { GuildConfig } from '@common/common/guildConfig/guildConfig.entity';
 import { OpenAIUsageInterface } from '@common/common/openai/open-ai-usage.interface';
 import { OpenAIUsage } from '@common/common/openAIUsage/openAIUsage.entity';
-import {
-  SlashCommandBuilder,
-  SlashCommandStringOption,
-} from '@discordjs/builders';
+import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AxiosResponse } from 'axios';
-import { CommandInteraction, CacheType } from 'discord.js';
+import { CacheType, CommandInteraction } from 'discord.js';
 import { Configuration, CreateCompletionResponse, OpenAIApi } from 'openai';
 import { Repository } from 'typeorm';
+import { AskAiService } from '../ask-ai/ask-ai.service';
 import { Command } from '../command';
 
 @Injectable()
-export class AskAiService extends Command {
+export class ChatAiReplyService extends Command {
   private readonly logger = new Logger(AskAiService.name);
   private readonly configuration: Configuration;
   private readonly openAiApi: OpenAIApi;
 
-  public COMMAND_NAME = 'ask-ai';
+  public COMMAND_NAME = 'chat-ai-reply';
 
   /**
    *
@@ -44,20 +42,11 @@ export class AskAiService extends Command {
   }
 
   public setup(): SlashCommandBuilder {
-    const questionOption = (builder: SlashCommandStringOption) =>
-      builder
-        .setName('question')
-        .setNameLocalization('nl', 'vraag')
-        .setDescription('The question to ask')
-        .setDescriptionLocalization('nl', 'De vraag die je wilt stellen')
-        .setRequired(true);
-
     return new SlashCommandBuilder()
-      .setName('ask-ai')
-      .setNameLocalization('nl', 'vraag-ai')
-      .setDescription('Ask the bot a question')
-      .setDescriptionLocalization('nl', 'Stel de bot een vraag')
-      .addStringOption(questionOption)
+      .setName('chat-ai-reply')
+      .setNameLocalization('nl', 'chat-ai-antwoord')
+      .setDescription('Reply to the chat')
+      .setDescriptionLocalization('nl', 'Antwoord op de chat')
       .setDefaultPermission(false);
   }
 
@@ -67,9 +56,6 @@ export class AskAiService extends Command {
     await interaction.deferReply();
 
     try {
-      const question = interaction.options.getString('question');
-      if (!question) throw new Error('No question provided');
-
       const guildConfig = await this.guildConfigRepository.findOneOrFail({
         where: {
           guild: {
@@ -84,16 +70,37 @@ export class AskAiService extends Command {
         return;
       }
 
+      await interaction.guild.fetch();
+      const self = await interaction.guild.members.fetch(
+        interaction.client.user.id,
+      );
+
+      await interaction.channel.fetch();
+      const guildChannel = interaction.channel;
+      await guildChannel.messages.fetch();
+      const lastMessages = guildChannel.messages.cache
+        .sort((a, b) => {
+          return a.createdTimestamp - b.createdTimestamp;
+        })
+        .last(10);
+
+      const lastMessageInput = lastMessages.map(
+        (m) => `${m.member.displayName}: ${m.content}`,
+      );
+
+      const inputString = `${lastMessageInput.join('\n')}`;
+
       const response = <
         AxiosResponse<CreateCompletionResponse & OpenAIUsageInterface, any>
       >await this.openAiApi.createCompletion({
         model: 'text-curie-001',
-        prompt: `${question}\n\n`,
+        prompt: inputString,
         temperature: 0.7,
         max_tokens: 256,
-        top_p: 1,
-        frequency_penalty: 0.0,
+        top_p: 1.0,
+        frequency_penalty: 0.7,
         presence_penalty: 0.0,
+        stop: [`${self.displayName}:`],
       });
 
       if (response.data.usage) {
@@ -111,7 +118,7 @@ export class AskAiService extends Command {
 
       if (response.data.choices.length > 0) {
         await interaction.editReply({
-          content: `Input: ${question}\nOutput: ${response.data.choices[0].text}`,
+          content: `${response.data.choices[0].text}`,
         });
       } else {
         await interaction.editReply({

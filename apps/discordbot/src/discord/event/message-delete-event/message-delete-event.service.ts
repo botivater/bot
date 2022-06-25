@@ -33,6 +33,8 @@ export class MessageDeleteEventService {
       if (message.inGuild()) {
         const { member, channelId, createdAt, content } = message;
 
+        if (member.user.bot) return;
+
         const foundMessage = await this.messageRepository.findOne({
           where: { snowflake: message.id },
         });

@@ -55,6 +55,8 @@ import { MessageDeleteEventService } from './event/message-delete-event/message-
 import { QAndAService } from './command/q-and-a/q-and-a.service';
 import { AskAiService } from './command/ask-ai/ask-ai.service';
 import { CommandAlias } from '@common/common/commandAlias/commandAlias.entity';
+import { ChatAiReplyService } from './command/chat-ai-reply/chat-ai-reply.service';
+import { OpenAIUsage } from '@common/common/openAIUsage/openAIUsage.entity';
 
 const discordFactory = {
   provide: Discord,
@@ -84,6 +86,7 @@ const discordFactory = {
       Tenant,
       Message,
       CommandAlias,
+      OpenAIUsage,
     ]),
     ScheduleModule.forRoot(),
   ],
@@ -126,6 +129,7 @@ const discordFactory = {
     MessageDeleteEventService,
     QAndAService,
     AskAiService,
+    ChatAiReplyService,
   ],
   exports: [discordFactory],
   controllers: [BotController],

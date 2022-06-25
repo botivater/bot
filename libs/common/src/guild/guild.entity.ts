@@ -20,6 +20,7 @@ import { GuildChannel } from '../guildChannel/guildChannel.entity';
 import { Report } from '../report/report.entity';
 import { Tenant } from '../tenant/tenant.entity';
 import { CommandAlias } from '../commandAlias/commandAlias.entity';
+import { OpenAIUsage } from '../openAIUsage/openAIUsage.entity';
 
 @Entity()
 export class Guild {
@@ -83,4 +84,7 @@ export class Guild {
 
   @OneToMany(() => CommandAlias, (commandAlias) => commandAlias.guild)
   commandAliases: CommandAlias[];
+
+  @OneToMany(() => OpenAIUsage, (openAIUsage) => openAIUsage.guild)
+  openAIUsage: OpenAIUsage[];
 }
