@@ -63,6 +63,7 @@ export class MessageController {
       },
       take: limit,
       skip: offset,
+      withDeleted: true,
     });
   }
 
