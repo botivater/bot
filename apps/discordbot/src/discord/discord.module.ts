@@ -57,6 +57,7 @@ import { AskAiService } from './command/ask-ai/ask-ai.service';
 import { CommandAlias } from '@common/common/commandAlias/commandAlias.entity';
 import { ChatAiReplyService } from './command/chat-ai-reply/chat-ai-reply.service';
 import { OpenAIUsage } from '@common/common/openAIUsage/openAIUsage.entity';
+import { GuildMemberRemoveEventService } from './event/guild-member-remove-event/guild-member-remove-event.service';
 
 const discordFactory = {
   provide: Discord,
@@ -130,6 +131,7 @@ const discordFactory = {
     QAndAService,
     AskAiService,
     ChatAiReplyService,
+    GuildMemberRemoveEventService,
   ],
   exports: [discordFactory],
   controllers: [BotController],

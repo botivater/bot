@@ -49,6 +49,6 @@ export class GuildMemberService {
   }
 
   async remove(id: number) {
-    return await this.guildMemberRepository.delete({ id });
+    return await this.guildMemberRepository.softDelete({ id });
   }
 }

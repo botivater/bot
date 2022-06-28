@@ -43,7 +43,7 @@ export class SyncService {
         (v) => `${v.name} (${v.snowflake})`,
       )}]`,
     );
-    await this.guildRepository.remove(removableGuilds);
+    await this.guildRepository.softRemove(removableGuilds);
 
     const addableGuilds = await this.compareDiscordGuildsToDatabaseGuilds();
     this.logger.debug(
@@ -66,7 +66,7 @@ export class SyncService {
         (v) => `${v.name} (${v.snowflake})`,
       )}]`,
     );
-    await this.guildMemberRepository.remove(removeableGuildMembers);
+    await this.guildMemberRepository.softRemove(removeableGuildMembers);
 
     const addableGuildMembers =
       await this.compareDiscordGuildMembersToDatabaseGuildMembers();
@@ -122,9 +122,18 @@ export class SyncService {
     const addableGuilds: Guild[] = [];
 
     for await (const discordGuild of this.discord.guilds.cache.values()) {
-      const found = await this.guildRepository.findOneBy({
-        snowflake: discordGuild.id,
+      const found = await this.guildRepository.findOne({
+        where: {
+          snowflake: discordGuild.id,
+        },
+        withDeleted: true,
       });
+
+      if (found && found.deletedAt) {
+        found.deletedAt = null;
+        addableGuilds.push(found);
+      }
+
       if (!found) {
         const newGuild = new Guild();
         newGuild.snowflake = discordGuild.id;
@@ -192,7 +201,13 @@ export class SyncService {
             where: {
               snowflake: discordGuildMember.id,
             },
+            withDeleted: true,
           });
+
+          if (found && found.deletedAt) {
+            found.deletedAt = null;
+            addableGuildMembers.push(found);
+          }
 
           if (!found) {
             const newGuildMember = new GuildMember();
