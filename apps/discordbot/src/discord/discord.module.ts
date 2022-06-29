@@ -59,6 +59,7 @@ import { ChatAiReplyService } from './command/chat-ai-reply/chat-ai-reply.servic
 import { OpenAIUsage } from '@common/common/openAIUsage/openAIUsage.entity';
 import { GuildMemberRemoveEventService } from './event/guild-member-remove-event/guild-member-remove-event.service';
 import { AskAnonymouslyCommandService } from './command/ask-anonymously-command/ask-anonymously-command.service';
+import { MessageDeleteBulkEventService } from './event/message-delete-bulk-event/message-delete-bulk-event.service';
 
 const discordFactory = {
   provide: Discord,
@@ -134,6 +135,7 @@ const discordFactory = {
     ChatAiReplyService,
     GuildMemberRemoveEventService,
     AskAnonymouslyCommandService,
+    MessageDeleteBulkEventService,
   ],
   exports: [discordFactory],
   controllers: [BotController],
