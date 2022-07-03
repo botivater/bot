@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { INestApplication } from '@nestjs/common';
 import * as request from 'supertest';
-import { Contrib/lymeverenigingMemberCheckerModule } from './../src/contrib/lymevereniging-member-checker.module';
+import { LymeverenigingMemberCheckerModule } from './../src/lymevereniging-member-checker.module';
 
-describe('Contrib/lymeverenigingMemberCheckerController (e2e)', () => {
+describe('LymeverenigingMemberCheckerController (e2e)', () => {
   let app: INestApplication;
 
   beforeEach(async () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
-      imports: [Contrib/lymeverenigingMemberCheckerModule],
+      imports: [LymeverenigingMemberCheckerModule],
     }).compile();
 
     app = moduleFixture.createNestApplication();
