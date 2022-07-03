@@ -1,5 +1,5 @@
 import { Controller, Logger } from '@nestjs/common';
-import { GrpcMethod } from '@nestjs/microservices';
+import { MessagePattern } from '@nestjs/microservices';
 import { BotService, NotFoundError } from './bot/bot.service';
 import { CreateMessageWithReactionRequest } from './interface/create-message-with-reaction-request.interface';
 import {
@@ -48,9 +48,9 @@ export class BotController {
    */
   constructor(private readonly botService: BotService) {}
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'ping' })
   ping(data: PingRequest): PingResponse {
-    this.logger.debug(`GRPC->ping()`);
+    this.logger.debug(`MessagePattern->ping()`);
     const { id } = data;
 
     return {
@@ -58,12 +58,12 @@ export class BotController {
     };
   }
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'loadAllGuildsCommands' })
   async loadAllGuildsCommands(
     data: LoadAllGuildsCommandsRequest,
   ): Promise<LoadAllGuildsCommandsResponse> {
     try {
-      this.logger.debug(`GRPC->loadAllGuildsCommands()`);
+      this.logger.debug(`MessagePattern->loadAllGuildsCommands()`);
 
       await this.botService.loadAllGuildsCommands();
 
@@ -80,7 +80,7 @@ export class BotController {
     }
   }
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'loadGuildCommands' })
   async loadGuildCommands(
     data: LoadGuildCommandsRequest,
   ): Promise<LoadGuildCommandsResponse> {
@@ -89,7 +89,7 @@ export class BotController {
 
       if (!id) throw new Error('Id is undefined or null');
 
-      this.logger.debug(`GRPC->loadGuildCommands(id: ${id})`);
+      this.logger.debug(`MessagePattern->loadGuildCommands(id: ${id})`);
 
       await this.botService.loadGuildCommands(id);
 
@@ -114,7 +114,7 @@ export class BotController {
     }
   }
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'getGuildChannels' })
   async getGuildChannels(
     data: GetGuildChannelsRequest,
   ): Promise<GetGuildChannelsResponse> {
@@ -123,7 +123,9 @@ export class BotController {
 
       if (!guildId) throw new Error('guildId is undefined or null');
 
-      this.logger.debug(`GRPC->getGuildChannels(guildId: ${guildId})`);
+      this.logger.debug(
+        `MessagePattern->getGuildChannels(guildId: ${guildId})`,
+      );
 
       const guildChannels = await this.botService.getGuildChannels(guildId);
 
@@ -151,7 +153,7 @@ export class BotController {
     }
   }
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'getGuildMembers' })
   async getGuildMembers(
     data: GetGuildMembersRequest,
   ): Promise<GetGuildMembersResponse> {
@@ -160,7 +162,7 @@ export class BotController {
 
       if (!guildId) throw new Error('guildId is undefined or null');
 
-      this.logger.debug(`GRPC->getGuildMembers(guildId: ${guildId})`);
+      this.logger.debug(`MessagePattern->getGuildMembers(guildId: ${guildId})`);
 
       const guildMembers = await this.botService.getGuildMembers(guildId);
 
@@ -188,7 +190,7 @@ export class BotController {
     }
   }
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'getGuildRoles' })
   async getGuildRoles(
     data: GetGuildRolesRequest,
   ): Promise<GetGuildRolesResponse> {
@@ -197,7 +199,7 @@ export class BotController {
 
       if (!guildId) throw new Error('guildId is undefined or null');
 
-      this.logger.debug(`GRPC->getGuildRoles(guildId: ${guildId})`);
+      this.logger.debug(`MessagePattern->getGuildRoles(guildId: ${guildId})`);
 
       const guildRoles = await this.botService.getGuildRoles(guildId);
 
@@ -225,7 +227,7 @@ export class BotController {
     }
   }
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'speak' })
   async speak(data: SpeakRequest): Promise<SpeakResponse> {
     try {
       const { channelSnowflake, message } = data;
@@ -235,7 +237,7 @@ export class BotController {
       if (!message) throw new Error('message is undefined or null');
 
       this.logger.debug(
-        `GRPC->speak(channelSnowflake: ${channelSnowflake}; message: ${message})`,
+        `MessagePattern->speak(channelSnowflake: ${channelSnowflake}; message: ${message})`,
       );
 
       await this.botService.speak(channelSnowflake, message);
@@ -261,7 +263,7 @@ export class BotController {
     }
   }
 
-  @GrpcMethod('BotService')
+  @MessagePattern({ cmd: 'createMessageWithReactions' })
   async createMessageWithReactions(
     data: CreateMessageWithReactionRequest,
   ): Promise<CreateMessageWithReactionResponse> {
@@ -274,7 +276,7 @@ export class BotController {
       if (!reactions) throw new Error('reactions is undefined or null');
 
       this.logger.debug(
-        `GRPC->createMessageWithReaction(channelSnowflake: ${channelSnowflake}; message: ${message}; reactions: ${reactions})`,
+        `MessagePattern->createMessageWithReaction(channelSnowflake: ${channelSnowflake}; message: ${message}; reactions: ${reactions})`,
       );
 
       const messageSnowflake = await this.botService.createMessageWithReactions(

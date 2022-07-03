@@ -1,6 +1,6 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { ApiController } from './api.controller';
 import { ApiService } from './api.service';
 import { HealthModule } from './health/health.module';
@@ -28,21 +28,6 @@ import { CommandAliasModule } from './command-alias/command-alias.module';
   imports: [
     ConfigModule.forRoot(),
     CommonModule,
-    ClientsModule.registerAsync([
-      {
-        name: 'BOT_PACKAGE',
-        useFactory: (configService: ConfigService) => ({
-          transport: Transport.GRPC,
-          options: {
-            package: 'bot',
-            protoPath: 'protobuf/bot/bot.proto',
-            url: configService.get('BOT_GRPC_URL'),
-          },
-        }),
-        imports: [ConfigModule],
-        inject: [ConfigService],
-      },
-    ]),
     forwardRef(() => HealthModule),
     GuildModule,
     AuthModule,
@@ -64,7 +49,25 @@ import { CommandAliasModule } from './command-alias/command-alias.module';
     CommandAliasModule,
   ],
   controllers: [ApiController],
-  providers: [ApiService],
+  providers: [
+    ApiService,
+    {
+      provide: 'DISCORDBOT_SERVICE',
+      useFactory: (configService: ConfigService) => {
+        return ClientProxyFactory.create({
+          transport: Transport.RMQ,
+          options: {
+            urls: [configService.get<string>('RABBITMQ_URI')],
+            queue: 'discord_bot',
+            queueOptions: {
+              durable: false,
+            },
+          },
+        });
+      },
+      inject: [ConfigService],
+    },
+  ],
   exports: [ApiService],
 })
 export class ApiModule {}

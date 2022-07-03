@@ -1,5 +1,5 @@
-import { Inject, Injectable, OnModuleInit } from '@nestjs/common';
-import { ClientGrpc } from '@nestjs/microservices';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 import { CreateMessageWithReactionRequest } from 'apps/discordbot/src/discord/bot/interface/create-message-with-reaction-request.interface';
 import { CreateMessageWithReactionResponse } from 'apps/discordbot/src/discord/bot/interface/create-message-with-reaction-response.interface';
 import { Observable } from 'rxjs';
@@ -8,52 +8,62 @@ import { BotGuildMember } from './bot-guild-member.interface';
 import { BotGuildRole } from './bot-guild-role.interface';
 import { BotLoadGuildCommandsRequest } from './bot-load-guild-commands-request.interface';
 import { BotLoadGuildCommandsResponse } from './bot-load-guild-commands-response.interface';
-import { BotService } from './bot-service.interface';
 import { BotSpeakRequest } from './bot-speak-request.interface';
 import { BotSpeakResponse } from './bot-speak-response.interface';
 
 @Injectable()
-export class ApiService implements OnModuleInit {
-  private botService: BotService;
-
+export class ApiService {
   /**
    *
    */
-  constructor(@Inject('BOT_PACKAGE') private client: ClientGrpc) {}
+  constructor(
+    @Inject('DISCORDBOT_SERVICE') private discordBotServiceClient: ClientProxy,
+  ) {}
 
-  onModuleInit() {
-    this.botService = this.client.getService<BotService>('BotService');
+  ping(id = 1): Observable<{ id: number }> {
+    return this.discordBotServiceClient.send({ cmd: 'ping' }, { id });
   }
 
   loadGuildCommands(
     data: BotLoadGuildCommandsRequest,
   ): Observable<BotLoadGuildCommandsResponse> {
-    return this.botService.loadGuildCommands(data);
-  }
-
-  ping(id = 1): Observable<{ id: number }> {
-    return this.botService.ping({ id });
+    return this.discordBotServiceClient.send(
+      { cmd: 'loadGuildCommands' },
+      data,
+    );
   }
 
   getGuildChannels(guildId: number): Observable<BotGuildChannel[]> {
-    return this.botService.getGuildChannels({ guildId });
+    return this.discordBotServiceClient.send(
+      { cmd: 'getGuildChannels' },
+      { guildId },
+    );
   }
 
   getGuildMembers(guildId: number): Observable<BotGuildMember[]> {
-    return this.botService.getGuildMembers({ guildId });
+    return this.discordBotServiceClient.send(
+      { cmd: 'getGuildMembers' },
+      { guildId },
+    );
   }
 
   getGuildRoles(guildId: number): Observable<BotGuildRole[]> {
-    return this.botService.getGuildRoles({ guildId });
+    return this.discordBotServiceClient.send(
+      { cmd: 'getGuildRoles' },
+      { guildId },
+    );
   }
 
   speak(data: BotSpeakRequest): Observable<BotSpeakResponse> {
-    return this.botService.speak(data);
+    return this.discordBotServiceClient.send({ cmd: 'speak' }, data);
   }
 
   createMessageWithReaction(
     data: CreateMessageWithReactionRequest,
   ): Observable<CreateMessageWithReactionResponse> {
-    return this.botService.createMessageWithReactions(data);
+    return this.discordBotServiceClient.send(
+      { cmd: 'createMessageWithReactions' },
+      data,
+    );
   }
 }

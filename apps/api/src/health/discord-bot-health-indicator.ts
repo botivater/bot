@@ -4,6 +4,7 @@ import {
   HealthIndicator,
   HealthIndicatorResult,
 } from '@nestjs/terminus';
+import { timeout } from 'rxjs';
 import { ApiService } from '../api.service';
 
 @Injectable()
@@ -11,27 +12,28 @@ export class DiscordBotHealthIndicator extends HealthIndicator {
   /**
    *
    */
-  constructor(private apiService: ApiService) {
+  constructor(private readonly apiService: ApiService) {
     super();
   }
 
   async isHealthy(key: string): Promise<HealthIndicatorResult> {
-    let isHealthy = false;
-    try {
-      isHealthy = await new Promise<boolean>((resolve) => {
-        // Commented out due to bug in GRPCjs
-        // when connection fails the whole process crashes
-        // even when wrapping in a try/catch
-        this.apiService.ping().subscribe(() => resolve(true));
-        setTimeout(() => resolve(false), 5000);
-      });
-    } catch (err) {
-      console.error(err);
-    }
+    const isHealthy = await new Promise<boolean>((resolve) => {
+      this.apiService
+        .ping()
+        .pipe(timeout(1000))
+        .subscribe({
+          next() {
+            resolve(true);
+          },
+          error() {
+            resolve(false);
+          },
+        });
+    });
 
     const result = this.getStatus(key, isHealthy);
 
-    if (isHealthy) return result;
+    if (this.isHealthy) return result;
     throw new HealthCheckError('Discord Bot health check failed', result);
   }
 }

@@ -45,7 +45,6 @@ COPY --from=builder --chown=node:node /home/node/package.json ./
 COPY --from=builder --chown=node:node /home/node/yarn.lock ./
 COPY --from=builder --chown=node:node /home/node/node_modules/ ./node_modules/
 COPY --from=builder --chown=node:node /home/node/dist/ ./dist/
-COPY --from=builder --chown=node:node /home/node/protobuf/ ./protobuf/
 
 # Run the startup script
 CMD node dist/apps/${APP}/main.js
