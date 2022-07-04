@@ -24,6 +24,7 @@ import { MessageModule } from './message/message.module';
 import { GuildChannelModule } from './guild-channel/guild-channel.module';
 import { CommandAliasModule } from './command-alias/command-alias.module';
 import { EmailerModule } from './emailer/emailer.module';
+import { ModuleModule } from './module/module.module';
 
 @Module({
   imports: [
@@ -49,6 +50,7 @@ import { EmailerModule } from './emailer/emailer.module';
     GuildChannelModule,
     CommandAliasModule,
     EmailerModule,
+    ModuleModule,
   ],
   controllers: [ApiController],
   providers: [

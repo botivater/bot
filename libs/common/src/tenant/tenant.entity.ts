@@ -12,6 +12,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { EmailConfig } from '../emailConfig/emailConfig.entity';
+import { Feature } from '../feature/feature.entity';
 import { Guild } from '../guild/guild.entity';
 import { User } from '../user/user.entity';
 
@@ -45,4 +46,7 @@ export class Tenant {
 
   @RelationId((tenant: Tenant) => tenant.emailConfig)
   emailConfigId?: number;
+
+  @OneToMany(() => Feature, (feature) => feature.tenant)
+  features: Feature[];
 }

@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   JoinColumn,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
@@ -22,6 +23,7 @@ import { Report } from '../report/report.entity';
 import { Tenant } from '../tenant/tenant.entity';
 import { CommandAlias } from '../commandAlias/commandAlias.entity';
 import { OpenAIUsage } from '../openAIUsage/openAIUsage.entity';
+import { Feature } from '../feature/feature.entity';
 
 @Entity()
 export class Guild {
@@ -91,4 +93,7 @@ export class Guild {
 
   @OneToMany(() => OpenAIUsage, (openAIUsage) => openAIUsage.guild)
   openAIUsage: OpenAIUsage[];
+
+  @ManyToMany(() => Feature, (feature) => feature.guilds)
+  features: Feature[];
 }

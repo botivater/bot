@@ -17,6 +17,7 @@ import { Message } from './libs/common/src/message/message.entity';
 import { CommandAlias } from './libs/common/src/commandAlias/commandAlias.entity';
 import { OpenAIUsage } from './libs/common/src/openAIUsage/openAIUsage.entity';
 import { EmailConfig } from './libs/common/src/emailConfig/emailConfig.entity';
+import { Feature } from './libs/common/src/feature/feature.entity';
 import { DataSource } from 'typeorm';
 import 'dotenv/config';
 
@@ -43,6 +44,7 @@ export const AppDataSource = new DataSource({
     CommandAlias,
     OpenAIUsage,
     EmailConfig,
+    Feature,
   ],
   migrations: [`${__dirname}/migrations/*.ts`],
 });

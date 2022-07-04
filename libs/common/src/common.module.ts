@@ -11,6 +11,7 @@ import { EventFlow } from './eventFlow/eventFlow.entity';
 import { EventFlowAction } from './eventFlowAction/eventFlowAction.entity';
 import { EventFlowCondition } from './eventFlowCondition/eventFlowCondition.entity';
 import { EventFlowTrigger } from './eventFlowTrigger/eventFlowTrigger.entity';
+import { Feature } from './feature/feature.entity';
 import { Guild } from './guild/guild.entity';
 import { GuildChannel } from './guildChannel/guildChannel.entity';
 import { GuildConfig } from './guildConfig/guildConfig.entity';
@@ -47,6 +48,7 @@ import { User } from './user/user.entity';
           CommandAlias,
           OpenAIUsage,
           EmailConfig,
+          Feature,
         ],
         url: configService.getOrThrow('DATABASE_URL'),
         synchronize: false,
