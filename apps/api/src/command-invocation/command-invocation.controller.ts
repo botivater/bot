@@ -7,11 +7,14 @@ import {
   Param,
   Delete,
   Query,
+  UseGuards,
 } from '@nestjs/common';
+import { JwtGuard } from '../auth/jwt.guard';
 import { CommandInvocationService } from './command-invocation.service';
 import { CreateCommandInvocationDto } from './dto/create-command-invocation.dto';
 import { UpdateCommandInvocationDto } from './dto/update-command-invocation.dto';
 
+@UseGuards(JwtGuard)
 @Controller('command-invocation')
 export class CommandInvocationController {
   constructor(

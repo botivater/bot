@@ -2,12 +2,16 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
+  RelationId,
   UpdateDateColumn,
 } from 'typeorm';
+import { EmailConfig } from '../emailConfig/emailConfig.entity';
 import { Guild } from '../guild/guild.entity';
 import { User } from '../user/user.entity';
 
@@ -31,4 +35,14 @@ export class Tenant {
 
   @OneToMany(() => Guild, (guild) => guild.tenant)
   guilds: Guild[];
+
+  @OneToOne(() => EmailConfig, {
+    nullable: true,
+    cascade: ['insert', 'update', 'remove'],
+  })
+  @JoinColumn()
+  emailConfig: EmailConfig;
+
+  @RelationId((tenant: Tenant) => tenant.emailConfig)
+  emailConfigId?: number;
 }

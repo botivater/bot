@@ -3,7 +3,9 @@ import { LymeverenigingMemberCheckerService } from './lymevereniging-member-chec
 
 @Controller()
 export class LymeverenigingMemberCheckerController {
-  constructor(private readonly lymeverenigingMemberCheckerService: LymeverenigingMemberCheckerService) {}
+  constructor(
+    private readonly lymeverenigingMemberCheckerService: LymeverenigingMemberCheckerService,
+  ) {}
 
   @Get()
   getHello(): string {

@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TenantService } from './tenant.service';
 import { CreateTenantDto } from './dto/create-tenant.dto';
 import { UpdateTenantDto } from './dto/update-tenant.dto';
+import { JwtGuard } from '../auth/jwt.guard';
 
+@UseGuards(JwtGuard)
 @Controller('tenant')
 export class TenantController {
   constructor(private readonly tenantService: TenantService) {}

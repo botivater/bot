@@ -11,12 +11,17 @@ describe('LymeverenigingMemberCheckerController', () => {
       providers: [LymeverenigingMemberCheckerService],
     }).compile();
 
-    lymeverenigingMemberCheckerController = app.get<LymeverenigingMemberCheckerController>(LymeverenigingMemberCheckerController);
+    lymeverenigingMemberCheckerController =
+      app.get<LymeverenigingMemberCheckerController>(
+        LymeverenigingMemberCheckerController,
+      );
   });
 
   describe('root', () => {
     it('should return "Hello World!"', () => {
-      expect(lymeverenigingMemberCheckerController.getHello()).toBe('Hello World!');
+      expect(lymeverenigingMemberCheckerController.getHello()).toBe(
+        'Hello World!',
+      );
     });
   });
 });

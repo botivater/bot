@@ -6,6 +6,7 @@ import { CommandFlow } from './commandFlow/commandFlow.entity';
 import { CommandFlowGroup } from './commandFlowGroup/commandFlowGroup.entity';
 import { CommandInvocation } from './commandInvocation/commandInvocation.entity';
 import { CommandList } from './commandList/commandList.entity';
+import { EmailConfig } from './emailConfig/emailConfig.entity';
 import { EventFlow } from './eventFlow/eventFlow.entity';
 import { EventFlowAction } from './eventFlowAction/eventFlowAction.entity';
 import { EventFlowCondition } from './eventFlowCondition/eventFlowCondition.entity';
@@ -45,6 +46,7 @@ import { User } from './user/user.entity';
           Message,
           CommandAlias,
           OpenAIUsage,
+          EmailConfig,
         ],
         url: configService.getOrThrow('DATABASE_URL'),
         synchronize: false,

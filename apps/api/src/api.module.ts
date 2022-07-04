@@ -23,6 +23,7 @@ import { LoadGuildCommandsModule } from './discord/load-guild-commands/load-guil
 import { MessageModule } from './message/message.module';
 import { GuildChannelModule } from './guild-channel/guild-channel.module';
 import { CommandAliasModule } from './command-alias/command-alias.module';
+import { EmailerModule } from './emailer/emailer.module';
 
 @Module({
   imports: [
@@ -47,6 +48,7 @@ import { CommandAliasModule } from './command-alias/command-alias.module';
     MessageModule,
     GuildChannelModule,
     CommandAliasModule,
+    EmailerModule,
   ],
   controllers: [ApiController],
   providers: [
