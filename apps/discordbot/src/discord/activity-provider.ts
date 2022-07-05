@@ -81,23 +81,26 @@ export class ActivityProvider {
           } inactive role`,
         );
 
-        this.logger.debug(
-          `User "${dbGuildMember.identifier}" ${
-            hasActiveRole ? 'has' : "doesn't have"
-          } active role`,
-        );
-
         if (hasInactiveRole) {
           await guildMember.roles.remove(
             dbGuild.guildConfig.inactivityCheckConfig.inactiveRoleId,
           );
         }
 
-        if (!hasActiveRole) {
-          await guildMember.roles.add(
-            dbGuild.guildConfig.inactivityCheckConfig.activeRoleId,
-          );
-        }
+        // Uncommented by Jonas Claes.
+        // The role should not be automatically re-added.
+
+        // this.logger.debug(
+        //   `User "${dbGuildMember.identifier}" ${
+        //     hasActiveRole ? 'has' : "doesn't have"
+        //   } active role`,
+        // );
+
+        // if (!hasActiveRole) {
+        //   await guildMember.roles.add(
+        //     dbGuild.guildConfig.inactivityCheckConfig.activeRoleId,
+        //   );
+        // }
       }
     } catch (err) {
       this.logger.error(err);
