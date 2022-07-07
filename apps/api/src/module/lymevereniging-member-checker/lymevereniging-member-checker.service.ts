@@ -1,26 +1,22 @@
-import { Injectable } from '@nestjs/common';
-import { CreateLymeverenigingMemberCheckerDto } from './dto/create-lymevereniging-member-checker.dto';
-import { UpdateLymeverenigingMemberCheckerDto } from './dto/update-lymevereniging-member-checker.dto';
+import { CheckMemberStatusDto } from '@common/common/apps/lymevereniging-member-checker/dto/check-member-status.dto';
+import { CheckMemberStatusCode } from '@common/common/apps/lymevereniging-member-checker/enum/check-member-status-code';
+import { Inject, Injectable } from '@nestjs/common';
+import { ClientProxy } from '@nestjs/microservices';
 
 @Injectable()
 export class LymeverenigingMemberCheckerService {
-  create(createLymeverenigingMemberCheckerDto: CreateLymeverenigingMemberCheckerDto) {
-    return 'This action adds a new lymeverenigingMemberChecker';
-  }
+  /**
+   *
+   */
+  constructor(
+    @Inject('LYMEVERENIGING_MEMBER_CHECKER_SERVICE')
+    private readonly lymeverenigingMemberCheckerService: ClientProxy,
+  ) {}
 
-  findAll() {
-    return `This action returns all lymeverenigingMemberChecker`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} lymeverenigingMemberChecker`;
-  }
-
-  update(id: number, updateLymeverenigingMemberCheckerDto: UpdateLymeverenigingMemberCheckerDto) {
-    return `This action updates a #${id} lymeverenigingMemberChecker`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} lymeverenigingMemberChecker`;
+  checkMemberStatus(checkMemberStatusDto: CheckMemberStatusDto) {
+    return this.lymeverenigingMemberCheckerService.send<CheckMemberStatusCode>(
+      'checkMemberStatus',
+      checkMemberStatusDto,
+    );
   }
 }
