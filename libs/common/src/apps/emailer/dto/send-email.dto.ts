@@ -1,4 +1,4 @@
-export class SendMailDto {
+export class SendEmailDto {
   tenantId: number;
   to: string[];
   subject: string;

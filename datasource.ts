@@ -19,6 +19,7 @@ import { OpenAIUsage } from './libs/common/src/openAIUsage/openAIUsage.entity';
 import { EmailConfig } from './libs/common/src/emailConfig/emailConfig.entity';
 import { Feature } from './libs/common/src/feature/feature.entity';
 import { DataSource } from 'typeorm';
+import { EmailVerification } from './apps/emailer/src/entity/email-verification.entity';
 import 'dotenv/config';
 
 export const AppDataSource = new DataSource({
@@ -45,6 +46,7 @@ export const AppDataSource = new DataSource({
     OpenAIUsage,
     EmailConfig,
     Feature,
+    EmailVerification,
   ],
   migrations: [`${__dirname}/migrations/*.ts`],
 });

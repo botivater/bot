@@ -22,14 +22,16 @@ export class InteractionCreateEventService {
   public async handle(interaction: discord.Interaction<discord.CacheType>) {
     if (interaction.user.bot) return;
 
-    const { guild, member } = interaction;
+    if (interaction.inGuild()) {
+      const { guild, member } = interaction;
 
-    const dbGuild = await this.syncProvider.guild(guild);
-    if (member instanceof GuildMember) {
-      const dbGuildMember = await this.syncProvider.guildMember(
-        dbGuild,
-        member,
-      );
+      const dbGuild = await this.syncProvider.guild(guild);
+      if (member instanceof GuildMember) {
+        const dbGuildMember = await this.syncProvider.guildMember(
+          dbGuild,
+          member,
+        );
+      }
     }
 
     if (interaction.isCommand()) {

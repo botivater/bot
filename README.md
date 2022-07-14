@@ -35,6 +35,16 @@ $ yarn test:e2e
 $ yarn test:cov
 ```
 
+## Experimental
+
+```bash
+# Build the app using SWC
+$ yarn swc:build
+
+# Run the API
+$ node ./dist/apps/api/main.js
+```
+
 ## Support
 
 This project is MIT-licensed and sponsored through backers and organizations.

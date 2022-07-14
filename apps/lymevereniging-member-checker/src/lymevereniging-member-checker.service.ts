@@ -1,7 +1,9 @@
+import { SendMessageDto } from '@common/common/apps/discordbot/dto/send-message.dto';
 import { CheckMemberStatusDto } from '@common/common/apps/lymevereniging-member-checker/dto/check-member-status.dto';
 import { CheckMemberStatusCode } from '@common/common/apps/lymevereniging-member-checker/enum/check-member-status-code';
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { ClientProxy } from '@nestjs/microservices';
 import axios from 'axios';
 import { CheckMemberStatusApiResponseDto } from './check-member-status-api-response.dto';
 
@@ -14,12 +16,11 @@ export class LymeverenigingMemberCheckerService {
   /**
    *
    */
-  constructor(private readonly configService: ConfigService) {
-    // this.checkMemberStatus({ email: 'jonas@jonasclaes.be' }).then(console.log);
-    // this.checkMemberStatus({ email: 'm.vanderwaals40@gmail.com' }).then(
-    //   console.log,
-    // );
-  }
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject('DISCORDBOT_SERVICE')
+    private readonly discordBotService: ClientProxy,
+  ) {}
 
   async checkMemberStatus(
     checkMemberStatusDto: CheckMemberStatusDto,

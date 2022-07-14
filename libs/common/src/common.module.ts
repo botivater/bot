@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { EmailVerification } from 'apps/emailer/src/entity/email-verification.entity';
 import { CommandAlias } from './commandAlias/commandAlias.entity';
 import { CommandFlow } from './commandFlow/commandFlow.entity';
 import { CommandFlowGroup } from './commandFlowGroup/commandFlowGroup.entity';
@@ -49,6 +50,7 @@ import { User } from './user/user.entity';
           OpenAIUsage,
           EmailConfig,
           Feature,
+          EmailVerification,
         ],
         url: configService.getOrThrow('DATABASE_URL'),
         synchronize: false,

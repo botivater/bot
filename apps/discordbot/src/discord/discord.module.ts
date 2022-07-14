@@ -2,7 +2,7 @@ import { CommonModule } from '@common/common';
 import { Guild } from '@common/common/guild/guild.entity';
 import { GuildConfig } from '@common/common/guildConfig/guildConfig.entity';
 import { GuildMember } from '@common/common/guildMember/guildMember.entity';
-import { Module } from '@nestjs/common';
+import { Module, Provider } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActivityProvider } from './activity-provider';
@@ -61,7 +61,7 @@ import { GuildMemberRemoveEventService } from './event/guild-member-remove-event
 import { AskAnonymouslyCommandService } from './command/ask-anonymously-command/ask-anonymously-command.service';
 import { MessageDeleteBulkEventService } from './event/message-delete-bulk-event/message-delete-bulk-event.service';
 
-const discordFactory = {
+const discordFactory: Provider = {
   provide: Discord,
   useFactory: async (configService: ConfigService) => {
     const discord = new Discord(configService);
@@ -73,7 +73,7 @@ const discordFactory = {
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule,
     CommonModule,
     TypeOrmModule.forFeature([
       Guild,

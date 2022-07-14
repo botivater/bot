@@ -205,8 +205,6 @@ export class CommandService {
     try {
       const { guild, customId } = interaction;
 
-      this.logger.debug(`Handling modal submit: ${customId}`);
-
       if (customId) {
         const command = this.commandArray.find(
           (command) => command.COMMAND_NAME === customId,
@@ -217,10 +215,6 @@ export class CommandService {
           return;
         }
       }
-
-      throw new Error(
-        `Invalid modal submit: ${customId} executed in guild ${guild.name}`,
-      );
     } catch (err) {
       this.logger.error(err);
     }
