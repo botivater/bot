@@ -9,7 +9,6 @@ import discord, {
 import { SendVerificationMessageDto } from './dto/send-verification-message.dto';
 import { Discord } from '../../discord/discord';
 import { MessageButtonStyles, TextInputStyles } from 'discord.js/typings/enums';
-import { userMention } from '@discordjs/builders';
 import * as yup from 'yup';
 import { LymeverenigingMemberCheckerMessagePattern } from '@common/common/apps/lymevereniging-member-checker/enum/LymeverenigingMemberCheckerMessagePattern.enum';
 import { CheckMemberStatusCode } from '@common/common/apps/lymevereniging-member-checker/enum/check-member-status-code';
@@ -20,8 +19,15 @@ import { SendVerificationEmailDto } from '@common/common/apps/emailer/dto/send-v
 import { randomInt } from 'crypto';
 import { CheckVerificationDto } from '@common/common/apps/emailer/dto/check-verification.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Not, Repository } from 'typeorm';
 import { Guild } from '@common/common/guild/guild.entity';
+import { FeatureConfig } from '@common/common/feature-config/feature-config.entity';
+import { Feature, FeatureType } from '@common/common/feature/feature.entity';
+import { LymeverenigingMemberCheckerFeatureConfigDto } from './dto/lymevereniging-member-checker-feature-config.dto';
+import { LymeverenigingGuildMember } from '@common/common/apps/lymevereniging-member-checker/entity/lymevereniging-guild-member.entity';
+import { GuildMember } from '@common/common/guildMember/guildMember.entity';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { userMention } from '@discordjs/builders';
 
 export class ChannelNotFoundError extends Error {}
 export class ChannelNotTextChannelError extends Error {}
@@ -57,7 +63,17 @@ export class LymeverenigingMemberCheckerService {
     private readonly emailerService: ClientProxy,
     @InjectRepository(Guild)
     private readonly guildRepository: Repository<Guild>,
-  ) {}
+    @InjectRepository(GuildMember)
+    private readonly guildMemberRepository: Repository<GuildMember>,
+    @InjectRepository(Feature)
+    private readonly featureRepository: Repository<Feature>,
+    @InjectRepository(FeatureConfig)
+    private readonly featureConfigRepository: Repository<FeatureConfig>,
+    @InjectRepository(LymeverenigingGuildMember)
+    private readonly lymeverenigingGuildMemberRepository: Repository<LymeverenigingGuildMember>,
+  ) {
+    this.checkAllMembersStatus();
+  }
 
   async sendVerificationMessage(
     sendVerificationMessageDto: SendVerificationMessageDto,
@@ -72,40 +88,21 @@ export class LymeverenigingMemberCheckerService {
 
     messageActionRow.addComponents(messageButton);
 
-    if (sendVerificationMessageDto.type === 'channel') {
-      await this.discord.channels.fetch(
-        sendVerificationMessageDto.channelSnowflake,
-      );
+    await this.discord.channels.fetch(
+      sendVerificationMessageDto.channelSnowflake,
+    );
 
-      const guildChannel = this.discord.channels.cache.get(
-        sendVerificationMessageDto.channelSnowflake,
-      );
+    const guildChannel = this.discord.channels.cache.get(
+      sendVerificationMessageDto.channelSnowflake,
+    );
 
-      if (!guildChannel) throw new ChannelNotFoundError();
-      if (!guildChannel.isText()) throw new ChannelNotTextChannelError();
+    if (!guildChannel) throw new ChannelNotFoundError();
+    if (!guildChannel.isText()) throw new ChannelNotTextChannelError();
 
-      await guildChannel.send({
-        content: `Hey daar! Verifieer jouw lidmaatschap alstublieft.`,
-        components: [messageActionRow],
-      });
-    }
-
-    if (sendVerificationMessageDto.type === 'user') {
-      await this.discord.users.fetch(sendVerificationMessageDto.userSnowflake);
-
-      const dmChannel = this.discord.users.cache.get(
-        sendVerificationMessageDto.userSnowflake,
-      );
-
-      if (!dmChannel) throw new ChannelNotFoundError();
-
-      await dmChannel.send({
-        content: `Hey ${userMention(
-          sendVerificationMessageDto.userSnowflake,
-        )}! Verifieer jouw lidmaatschap alstublieft.`,
-        components: [messageActionRow],
-      });
-    }
+    await guildChannel.send({
+      content: `Hey daar! Verifieer jouw lidmaatschap alstublieft.`,
+      components: [messageActionRow],
+    });
   }
 
   async buttonInteractionCreated(
@@ -210,8 +207,38 @@ export class LymeverenigingMemberCheckerService {
             error: reject,
           });
       });
-      if (isMember !== 'MEMBER' && emailInput !== 'testing@jonasclaes.be')
+      if (
+        isMember !== CheckMemberStatusCode.MEMBER &&
+        emailInput !== 'testing@jonasclaes.be'
+      )
         throw new VerificationModalNotAMemberError();
+
+      const guildMember = await this.guildMemberRepository.findOne({
+        where: {
+          snowflake: interaction.user.id,
+        },
+      });
+      if (!guildMember) throw new Error('Guild member not found');
+
+      let lymeverenigingGuildMember =
+        await this.lymeverenigingGuildMemberRepository.findOne({
+          where: {
+            guildMemberId: guildMember.id,
+          },
+          withDeleted: true,
+        });
+      if (!lymeverenigingGuildMember)
+        lymeverenigingGuildMember = new LymeverenigingGuildMember();
+      if (lymeverenigingGuildMember.deletedAt) {
+        lymeverenigingGuildMember.deletedAt = null;
+        lymeverenigingGuildMember.registeredEmailVerified = false;
+      }
+
+      lymeverenigingGuildMember.guildMemberId = guildMember.id;
+      lymeverenigingGuildMember.registeredEmail = emailInput;
+      await this.lymeverenigingGuildMemberRepository.save(
+        lymeverenigingGuildMember,
+      );
 
       const messageActionRow = new MessageActionRow();
 
@@ -291,6 +318,8 @@ export class LymeverenigingMemberCheckerService {
   private async respondToEmailVerificationModal(
     interaction: discord.ModalSubmitInteraction<discord.CacheType>,
   ) {
+    await interaction.deferReply({ ephemeral: true });
+
     const codeInput = interaction.fields
       .getTextInputValue(this.emailVerificationModalCodeInputUuid)
       .trim();
@@ -337,9 +366,62 @@ export class LymeverenigingMemberCheckerService {
         }
       }
 
-      await interaction.reply({
+      const guild = await this.guildRepository.findOne({
+        where: {
+          snowflake: interaction.guild.id,
+        },
+        relations: {
+          tenant: true,
+        },
+      });
+      if (!guild) return;
+
+      const feature = await this.featureRepository.findOne({
+        where: {
+          tenant: {
+            id: guild.tenant.id,
+          },
+          type: FeatureType.LYMEVERENIGING_MEMBER_CHECKER,
+        },
+      });
+      if (!feature) return;
+
+      const featureConfig = await this.featureConfigRepository.findOne({
+        where: {
+          featureId: feature.id,
+        },
+      });
+      if (!featureConfig) return;
+
+      const config =
+        featureConfig.config as LymeverenigingMemberCheckerFeatureConfigDto;
+
+      const guildMember = await this.guildMemberRepository.findOne({
+        where: {
+          snowflake: interaction.user.id,
+        },
+      });
+      if (!guildMember) throw new Error('Guild member not found');
+
+      const lymeverenigingGuildMember =
+        await this.lymeverenigingGuildMemberRepository.findOne({
+          where: {
+            guildMemberId: guildMember.id,
+          },
+          withDeleted: true,
+        });
+      if (!lymeverenigingGuildMember)
+        throw new Error('Lymevereniging guild member not found');
+      if (lymeverenigingGuildMember.deletedAt)
+        lymeverenigingGuildMember.deletedAt = null;
+
+      lymeverenigingGuildMember.registeredEmailVerified = true;
+      await this.lymeverenigingGuildMemberRepository.save(
+        lymeverenigingGuildMember,
+      );
+
+      await interaction.editReply({
         content: `We hebben jouw email adres geverifieerd! Bedankt! Je krijgt binnen enkele seconden toegang tot de server!`,
-        ephemeral: true,
       });
 
       await interaction.guild.members.fetch(interaction.user.id);
@@ -347,26 +429,123 @@ export class LymeverenigingMemberCheckerService {
         interaction.user.id,
       );
 
-      await discordGuildMember.roles.add('998145127606398976');
+      await discordGuildMember.roles.add(config.roleSnowflake);
     } catch (err) {
       if (err instanceof EmailVerificationModalInvalidCodeError) {
-        await interaction.reply({
+        await interaction.editReply({
           content: 'Oeps, dat is geen geldige code. Probeer het opnieuw.',
-          ephemeral: true,
         });
       } else if (err instanceof EmailVerificationModalCodeExpiredError) {
-        await interaction.reply({
+        await interaction.editReply({
           content: 'Oeps, deze code is verlopen. Vraag een nieuwe code aan.',
-          ephemeral: true,
         });
       } else {
         this.logger.error(err);
-        await interaction.reply({
+        await interaction.editReply({
           content:
             'Er is een intern probleem opgetreden! Gelieve contact op te nemen met Jonas Claes.',
-          ephemeral: true,
         });
       }
     }
+  }
+
+  @Cron(CronExpression.EVERY_12_HOURS)
+  private async checkAllMembersStatus() {
+    this.logger.verbose('Running cron job');
+    const lymeverenigingGuildMembers =
+      await this.lymeverenigingGuildMemberRepository.find({
+        where: {
+          registeredEmailVerified: true,
+        },
+      });
+
+    await Promise.all(
+      lymeverenigingGuildMembers.map((lymeverenigingGuildMember) =>
+        this.checkMemberStatus(lymeverenigingGuildMember),
+      ),
+    );
+    this.logger.verbose('Finished cron job');
+  }
+
+  private async checkMemberStatus(
+    lymeverenigingGuildMember: LymeverenigingGuildMember,
+  ) {
+    const isMember = await new Promise((resolve, reject) => {
+      this.lymeverenigingMemberCheckerService
+        .send<CheckMemberStatusCode, CheckMemberStatusDto>(
+          {
+            cmd: LymeverenigingMemberCheckerMessagePattern.CHECK_MEMBER_STATUS,
+          },
+          { email: lymeverenigingGuildMember.registeredEmail },
+        )
+        .pipe(timeout(30 * 1000))
+        .subscribe({
+          next: resolve,
+          error: reject,
+        });
+    });
+    this.logger.verbose(isMember);
+    if (isMember !== CheckMemberStatusCode.NOT_MEMBER) return;
+
+    const guildMember = await this.guildMemberRepository.findOne({
+      where: {
+        id: lymeverenigingGuildMember.guildMemberId,
+      },
+      relations: {
+        guild: true,
+      },
+    });
+    if (!guildMember) return;
+
+    const guild = await this.guildRepository.findOne({
+      where: {
+        id: guildMember.guild.id,
+      },
+      relations: {
+        tenant: true,
+      },
+    });
+    if (!guild) return;
+
+    const feature = await this.featureRepository.findOne({
+      where: {
+        tenant: {
+          id: guild.tenant.id,
+        },
+        type: FeatureType.LYMEVERENIGING_MEMBER_CHECKER,
+      },
+    });
+    if (!feature) return;
+
+    const featureConfig = await this.featureConfigRepository.findOne({
+      where: {
+        featureId: feature.id,
+      },
+    });
+    if (!featureConfig) return;
+
+    const config =
+      featureConfig.config as LymeverenigingMemberCheckerFeatureConfigDto;
+
+    await this.discord.guilds.fetch(guild.snowflake);
+    const discordGuild = this.discord.guilds.cache.get(guild.snowflake);
+    if (!discordGuild) return;
+
+    await discordGuild.members.fetch(guildMember.snowflake);
+    const discordGuildMember = discordGuild.members.cache.get(
+      guildMember.snowflake,
+    );
+    if (!discordGuildMember) return;
+
+    await this.lymeverenigingGuildMemberRepository.softRemove(
+      lymeverenigingGuildMember,
+    );
+
+    await discordGuildMember.send({
+      content: `Hey ${userMention(
+        discordGuildMember.id,
+      )}! Onze systemen hebben geconcludeerd dat jij niet meer lid bent van de Lymevereniging, jammer! Met deze nieuwe status hebben wij automatisch jouw toegang tot de Lymevereniging Discord server verwijderd.`,
+    });
+    await discordGuildMember.roles.remove(config.roleSnowflake);
   }
 }

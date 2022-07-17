@@ -20,7 +20,9 @@ import { EmailConfig } from './libs/common/src/emailConfig/emailConfig.entity';
 import { Feature } from './libs/common/src/feature/feature.entity';
 import { DataSource } from 'typeorm';
 import { EmailVerification } from './apps/emailer/src/entity/email-verification.entity';
+import { FeatureConfig } from './libs/common/src/feature-config/feature-config.entity';
 import 'dotenv/config';
+import { LymeverenigingGuildMember } from './libs/common/src/apps/lymevereniging-member-checker/entity/lymevereniging-guild-member.entity';
 
 export const AppDataSource = new DataSource({
   type: 'mysql',
@@ -46,7 +48,9 @@ export const AppDataSource = new DataSource({
     OpenAIUsage,
     EmailConfig,
     Feature,
+    FeatureConfig,
     EmailVerification,
+    LymeverenigingGuildMember,
   ],
   migrations: [`${__dirname}/migrations/*.ts`],
 });

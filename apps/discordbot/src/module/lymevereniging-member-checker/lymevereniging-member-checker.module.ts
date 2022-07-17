@@ -6,9 +6,23 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ClientProxyFactory, Transport } from '@nestjs/microservices';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Guild } from '@common/common/guild/guild.entity';
+import { Feature } from '@common/common/feature/feature.entity';
+import { FeatureConfig } from '@common/common/feature-config/feature-config.entity';
+import { LymeverenigingGuildMember } from '@common/common/apps/lymevereniging-member-checker/entity/lymevereniging-guild-member.entity';
+import { GuildMember } from '@common/common/guildMember/guildMember.entity';
 
 @Module({
-  imports: [DiscordModule, ConfigModule, TypeOrmModule.forFeature([Guild])],
+  imports: [
+    DiscordModule,
+    ConfigModule,
+    TypeOrmModule.forFeature([
+      Guild,
+      GuildMember,
+      Feature,
+      FeatureConfig,
+      LymeverenigingGuildMember,
+    ]),
+  ],
   controllers: [LymeverenigingMemberCheckerController],
   providers: [
     {

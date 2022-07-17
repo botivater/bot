@@ -20,11 +20,6 @@ export class LymeverenigingMemberCheckerController {
     //   channelSnowflake: '995777397876068473',
     //   type: 'channel',
     // });
-
-    // this.sendVerificationMessage({
-    //   userSnowflake: '487283576325275648',
-    //   type: 'user',
-    // });
   }
 
   async sendVerificationMessage(
