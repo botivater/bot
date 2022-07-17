@@ -1,0 +1,13 @@
+Lymevereniging Discord Server
+Hey <%= fullName %>!
+
+Bedankt om jezelf aan te melden bij de Lymevereniging Discord Server!
+
+Om onze server en onze leden te beschermen, vragen wij ieder van onze leden zich te verifieren aan de hand van een email adres. Om jouw verificatie af te ronden, dien je onderstaande code door te geven via Discord.
+
+Jouw verificatiecode is: <%= verificationCode %>
+
+Met vriendelijke groeten
+Lymevereniging Discord Server Team
+
+Ervaar je problemen tijdens het verifieren? Contacteer dan zeker iemand van ons moderatie team!

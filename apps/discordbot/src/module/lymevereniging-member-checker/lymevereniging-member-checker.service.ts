@@ -19,7 +19,7 @@ import { SendVerificationEmailDto } from '@common/common/apps/emailer/dto/send-v
 import { randomInt } from 'crypto';
 import { CheckVerificationDto } from '@common/common/apps/emailer/dto/check-verification.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Guild } from '@common/common/guild/guild.entity';
 import { FeatureConfig } from '@common/common/feature-config/feature-config.entity';
 import { Feature, FeatureType } from '@common/common/feature/feature.entity';
@@ -28,6 +28,9 @@ import { LymeverenigingGuildMember } from '@common/common/apps/lymevereniging-me
 import { GuildMember } from '@common/common/guildMember/guildMember.entity';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { userMention } from '@discordjs/builders';
+import { readFile } from 'fs/promises';
+import { join } from 'path';
+import { render } from 'ejs';
 
 export class ChannelNotFoundError extends Error {}
 export class ChannelNotTextChannelError extends Error {}
@@ -262,6 +265,41 @@ export class LymeverenigingMemberCheckerService {
         },
       });
 
+      const htmlFile = await readFile(
+        join(
+          __dirname,
+          '../../../',
+          'templates/lymevereniging/verification-email.html',
+        ),
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      const txtFile = await readFile(
+        join(
+          __dirname,
+          '../../../',
+          'templates/lymevereniging/verification-email.txt',
+        ),
+        {
+          encoding: 'utf8',
+        },
+      );
+
+      await interaction.guild.members.fetch(interaction.user.id);
+      const discordGuildMember = interaction.guild.members.cache.get(
+        interaction.user.id,
+      );
+
+      const renderObject = {
+        fullName: discordGuildMember.displayName,
+        verificationCode,
+      };
+
+      const renderedHtml = render(htmlFile, renderObject);
+      const renderedText = render(txtFile, renderObject);
+
       await new Promise((resolve, reject) => {
         this.emailerService
           .send<
@@ -276,8 +314,8 @@ export class LymeverenigingMemberCheckerService {
               tenantId: guild.tenantId,
               to: [emailInput],
               subject: 'Email verifiëren',
-              body: `Verifieer je email adres door deze code in te vullen in de Discord server: ${verificationCode}`,
-              bodyHtml: `Verifieer je email adres door deze code in te vullen in de Discord server: <b>${verificationCode}</b>`,
+              body: renderedText,
+              bodyHtml: renderedHtml,
               verification: {
                 reference: interaction.user.id,
                 verificationToken: verificationCode,
