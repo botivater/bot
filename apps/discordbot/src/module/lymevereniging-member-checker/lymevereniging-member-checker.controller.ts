@@ -14,7 +14,6 @@ export class LymeverenigingMemberCheckerController {
     private readonly discord: Discord,
     private readonly lymeverenigingMemberCheckerService: LymeverenigingMemberCheckerService,
   ) {
-    this.discord.on('guildMemberAdd', this.guildMemberAdded.bind(this));
     this.discord.on('interactionCreate', this.interactionCreated.bind(this));
     this.logger.debug('LymeverenigingMemberCheckerController initialized');
     // this.sendVerificationMessage({
@@ -34,12 +33,6 @@ export class LymeverenigingMemberCheckerController {
     this.lymeverenigingMemberCheckerService.sendVerificationMessage(
       sendVerificationMessageDto,
     );
-  }
-
-  guildMemberAdded(member: discord.GuildMember) {
-    return this.lymeverenigingMemberCheckerService.guildMemberAdded({
-      snowflake: member.id,
-    });
   }
 
   async interactionCreated(

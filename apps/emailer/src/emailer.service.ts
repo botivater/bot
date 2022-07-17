@@ -78,6 +78,7 @@ export class EmailerService {
 
       await this.emailVerificationRepository.save(emailVerification);
     } catch (err) {
+      this.logger.error(err);
       throw err;
     }
   }

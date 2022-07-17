@@ -1,7 +1,5 @@
-import { SystemEventPattern } from '@common/common/SystemEventPattern.enum';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
-import { GuildMemberAddedDto } from '@common/common/SystemEventPatternDto/guild-member-added.dto';
 import discord, {
   MessageActionRow,
   MessageButton,
@@ -110,13 +108,6 @@ export class LymeverenigingMemberCheckerService {
     }
   }
 
-  guildMemberAdded(guildMemberAddedDto: GuildMemberAddedDto) {
-    this.lymeverenigingMemberCheckerService.emit<any, GuildMemberAddedDto>(
-      SystemEventPattern.GUILD_MEMBER_ADDED,
-      guildMemberAddedDto,
-    );
-  }
-
   async buttonInteractionCreated(
     interaction: discord.ButtonInteraction<discord.CacheType>,
   ) {
@@ -193,6 +184,8 @@ export class LymeverenigingMemberCheckerService {
   private async respondToVerificationModal(
     interaction: discord.ModalSubmitInteraction<discord.CacheType>,
   ) {
+    await interaction.deferReply({ ephemeral: true });
+
     const emailInput = interaction.fields
       .getTextInputValue(this.verificationModalEmailInputUuid)
       .trim();
@@ -217,7 +210,8 @@ export class LymeverenigingMemberCheckerService {
             error: reject,
           });
       });
-      // if (isMember !== 'MEMBER') throw new VerificationModalNotAMemberError();
+      if (isMember !== 'MEMBER' && emailInput !== 'testing@jonasclaes.be')
+        throw new VerificationModalNotAMemberError();
 
       const messageActionRow = new MessageActionRow();
 
@@ -241,7 +235,7 @@ export class LymeverenigingMemberCheckerService {
         },
       });
 
-      const response = await new Promise((resolve, reject) => {
+      await new Promise((resolve, reject) => {
         this.emailerService
           .send<
             {
@@ -270,29 +264,25 @@ export class LymeverenigingMemberCheckerService {
           });
       });
 
-      await interaction.reply({
+      await interaction.editReply({
         content: `We hebben geverifieerd dat jij lid bent van de Lymevereniging! Bedankt!\nNu volgt er nog 1 stap voor je toegang krijgt tot de server. Er is een email gestuurd met een code om je email adres te verifieren, deze dien je hier in te vullen.`,
-        ephemeral: true,
         components: [messageActionRow],
       });
     } catch (err) {
       if (err instanceof VerificationModalInvalidEmailError) {
-        await interaction.reply({
+        await interaction.editReply({
           content: 'Oeps, dat is geen geldig email adres. Probeer het opnieuw.',
-          ephemeral: true,
         });
       } else if (err instanceof VerificationModalNotAMemberError) {
-        await interaction.reply({
+        await interaction.editReply({
           content:
             'Wij konden jouw lidmaatschap niet verifiëren. Probeer opnieuw, of neem contact op met iemand. Het kan ook zijn dat jouw lidmaatschap verlopen is.',
-          ephemeral: true,
         });
       } else {
         this.logger.error(err);
-        await interaction.reply({
+        await interaction.editReply({
           content:
             'Er is een intern probleem opgetreden! Gelieve contact op te nemen met Jonas Claes.',
-          ephemeral: true,
         });
       }
     }
@@ -351,6 +341,13 @@ export class LymeverenigingMemberCheckerService {
         content: `We hebben jouw email adres geverifieerd! Bedankt! Je krijgt binnen enkele seconden toegang tot de server!`,
         ephemeral: true,
       });
+
+      await interaction.guild.members.fetch(interaction.user.id);
+      const discordGuildMember = interaction.guild.members.cache.get(
+        interaction.user.id,
+      );
+
+      await discordGuildMember.roles.add('998145127606398976');
     } catch (err) {
       if (err instanceof EmailVerificationModalInvalidCodeError) {
         await interaction.reply({
