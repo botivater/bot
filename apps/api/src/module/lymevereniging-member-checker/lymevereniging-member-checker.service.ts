@@ -4,7 +4,9 @@ import { UpdateLymeverenigingMemberCheckerDto } from './dto/update-lymeverenigin
 
 @Injectable()
 export class LymeverenigingMemberCheckerService {
-  create(createLymeverenigingMemberCheckerDto: CreateLymeverenigingMemberCheckerDto) {
+  create(
+    createLymeverenigingMemberCheckerDto: CreateLymeverenigingMemberCheckerDto,
+  ) {
     return 'This action adds a new lymeverenigingMemberChecker';
   }
 
@@ -16,7 +18,10 @@ export class LymeverenigingMemberCheckerService {
     return `This action returns a #${id} lymeverenigingMemberChecker`;
   }
 
-  update(id: number, updateLymeverenigingMemberCheckerDto: UpdateLymeverenigingMemberCheckerDto) {
+  update(
+    id: number,
+    updateLymeverenigingMemberCheckerDto: UpdateLymeverenigingMemberCheckerDto,
+  ) {
     return `This action updates a #${id} lymeverenigingMemberChecker`;
   }
 

@@ -9,7 +9,9 @@ describe('MessageDeleteBulkEventService', () => {
       providers: [MessageDeleteBulkEventService],
     }).compile();
 
-    service = module.get<MessageDeleteBulkEventService>(MessageDeleteBulkEventService);
+    service = module.get<MessageDeleteBulkEventService>(
+      MessageDeleteBulkEventService,
+    );
   });
 
   it('should be defined', () => {

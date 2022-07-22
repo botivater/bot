@@ -6,6 +6,7 @@ import { bold, userMention } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChannelType } from 'discord.js';
 import { Repository } from 'typeorm';
 import { Discord } from '../discord';
 import { PronounChecker } from '../helper/pronoun-checker';
@@ -139,8 +140,9 @@ export class SyncService {
         newGuild.snowflake = discordGuild.id;
         newGuild.name = discordGuild.name;
         newGuild.guildConfig = new GuildConfig();
-        const guildChannel = await discordGuild.channels.create('system', {
-          type: 'GUILD_TEXT',
+        const guildChannel = await discordGuild.channels.create({
+          type: ChannelType.GuildText,
+          name: 'system',
         });
         newGuild.guildConfig.systemChannelId = guildChannel.id;
         addableGuilds.push(newGuild);
@@ -284,7 +286,7 @@ export class SyncService {
             newGuildMember.snowflake = discordGuildChannel.id;
             newGuildMember.guild = databaseGuild;
             newGuildMember.name = discordGuildChannel.name;
-            newGuildMember.type = discordGuildChannel.type;
+            newGuildMember.type = ChannelType[discordGuildChannel.type];
 
             addableGuildChannels.push(newGuildMember);
           }

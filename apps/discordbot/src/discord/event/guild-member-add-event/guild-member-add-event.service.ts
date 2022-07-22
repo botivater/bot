@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Discord } from '../../discord';
-import discord from 'discord.js';
+import discord, { ChannelType } from 'discord.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Guild } from '@common/common/guild/guild.entity';
 import { Repository } from 'typeorm';
@@ -58,7 +58,7 @@ export class GuildMemberAddEventService {
         welcomeMessageConfig.channelSnowflake,
       );
       if (!discordChannel) throw new Error('Could not get Discord channel');
-      if (!discordChannel.isText())
+      if (discordChannel.type !== ChannelType.GuildText)
         throw new Error('Discord channel is not a text channel');
 
       const template = Handlebars.compile(welcomeMessageConfig.format);

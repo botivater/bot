@@ -9,7 +9,9 @@ describe('LymeverenigingMemberCheckerService', () => {
       providers: [LymeverenigingMemberCheckerService],
     }).compile();
 
-    service = module.get<LymeverenigingMemberCheckerService>(LymeverenigingMemberCheckerService);
+    service = module.get<LymeverenigingMemberCheckerService>(
+      LymeverenigingMemberCheckerService,
+    );
   });
 
   it('should be defined', () => {

@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import discord from 'discord.js';
+import discord, { ChannelType } from 'discord.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Discord } from '../../discord';
@@ -33,7 +33,7 @@ export class ChannelCreateEventService {
       newGuildChannel.guild = dbGuild;
       newGuildChannel.snowflake = discordGuildChannel.id;
       newGuildChannel.name = discordGuildChannel.name;
-      newGuildChannel.type = discordGuildChannel.type;
+      newGuildChannel.type = ChannelType[discordGuildChannel.type];
       await this.guildChannelRepository.save(newGuildChannel);
 
       this.logger.debug(`Guild channel ${newGuildChannel.name} created`);

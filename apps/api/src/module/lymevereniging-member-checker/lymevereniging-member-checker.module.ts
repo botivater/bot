@@ -4,6 +4,6 @@ import { LymeverenigingMemberCheckerController } from './lymevereniging-member-c
 
 @Module({
   controllers: [LymeverenigingMemberCheckerController],
-  providers: [LymeverenigingMemberCheckerService]
+  providers: [LymeverenigingMemberCheckerService],
 })
 export class LymeverenigingMemberCheckerModule {}

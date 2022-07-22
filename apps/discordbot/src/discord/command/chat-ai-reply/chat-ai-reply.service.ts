@@ -7,7 +7,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { AxiosResponse } from 'axios';
-import { CacheType, CommandInteraction } from 'discord.js';
+import {
+  CacheType,
+  ChatInputCommandInteraction,
+  CommandInteraction,
+} from 'discord.js';
 import { Configuration, CreateCompletionResponse, OpenAIApi } from 'openai';
 import { Repository } from 'typeorm';
 import { AskAiService } from '../ask-ai/ask-ai.service';
@@ -51,7 +55,7 @@ export class ChatAiReplyService extends Command {
   }
 
   public async handleCommand(
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply();
 

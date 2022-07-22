@@ -11,7 +11,9 @@ describe('LymeverenigingMemberCheckerController', () => {
       providers: [LymeverenigingMemberCheckerService],
     }).compile();
 
-    controller = module.get<LymeverenigingMemberCheckerController>(LymeverenigingMemberCheckerController);
+    controller = module.get<LymeverenigingMemberCheckerController>(
+      LymeverenigingMemberCheckerController,
+    );
   });
 
   it('should be defined', () => {

@@ -50,7 +50,7 @@ export class SendMessageBuildingBlockService {
           await this.discord.channels.fetch(to);
           const channel = this.discord.channels.cache.get(to);
           if (!channel) throw new Error('Guild channel not found');
-          if (!channel.isText())
+          if (!channel.isTextBased())
             throw new Error('Guild channel is not a text channel');
 
           await channel.send(

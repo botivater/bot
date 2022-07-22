@@ -9,7 +9,11 @@ import {
 } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CommandInteraction, CacheType } from 'discord.js';
+import {
+  CommandInteraction,
+  CacheType,
+  ChatInputCommandInteraction,
+} from 'discord.js';
 import { Repository } from 'typeorm';
 import { Discord } from '../../discord';
 import { Command } from '../command';
@@ -76,7 +80,7 @@ export class ReportCommandService extends Command {
   }
 
   public async handleCommand(
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 
@@ -129,7 +133,7 @@ export class ReportCommandService extends Command {
         dbGuild.guildConfig.systemChannelId,
       );
       if (!messageChannel) throw new Error('Message channel not found');
-      if (!messageChannel.isText())
+      if (!messageChannel.isTextBased())
         throw new Error('Message channel not a text channel');
 
       let message = `**Er is een nieuwe report binnen gekomen!**`;

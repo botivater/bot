@@ -8,7 +8,11 @@ import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
 import { hash } from 'bcrypt';
-import { CommandInteraction, CacheType } from 'discord.js';
+import {
+  CommandInteraction,
+  CacheType,
+  ChatInputCommandInteraction,
+} from 'discord.js';
 import { In, Repository } from 'typeorm';
 import { Command } from '../command';
 
@@ -76,7 +80,7 @@ export class GenerateLoginService extends Command {
   }
 
   public async handleCommand(
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({
       ephemeral: true,

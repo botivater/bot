@@ -7,6 +7,7 @@ import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import {
+  ApplicationCommandType,
   CacheType,
   CommandInteraction,
   ModalSubmitInteraction,
@@ -137,6 +138,8 @@ export class CommandService {
 
   public async executeCommand(interaction: CommandInteraction<CacheType>) {
     try {
+      if (interaction.commandType !== ApplicationCommandType.ChatInput) return;
+
       const { guild, commandName } = interaction;
 
       this.logger.debug(`Handling command: ${commandName}`);

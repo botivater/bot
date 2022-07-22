@@ -1,6 +1,7 @@
 import { Guild } from '@common/common/guild/guild.entity';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChannelType } from 'discord.js';
 import { Repository } from 'typeorm';
 import { CommandService } from '../../command/command.service';
 import { Discord } from '../../discord';
@@ -45,13 +46,19 @@ export class BotService implements IBotService {
     await this.discord.guilds.fetch(guild.snowflake);
     const discordGuild = this.discord.guilds.cache.get(guild.snowflake);
     await discordGuild.channels.fetch();
-    return discordGuild.channels.cache
-      .filter((c) => c.isText() || c.isVoice())
+    const channels = discordGuild.channels.cache
+      .filter(
+        (c) =>
+          c.type === ChannelType.GuildText || c.type === ChannelType.GuildVoice,
+      )
       .map((channel) => ({
         id: channel.id,
         name: channel.name,
-        type: channel.type,
+        type:
+          channel.type === ChannelType.GuildText ? 'GUILD_TEXT' : 'GUILD_VOICE',
       }));
+
+    return channels;
   }
 
   async getGuildMembers(id: number): Promise<GuildMember[]> {
@@ -87,7 +94,7 @@ export class BotService implements IBotService {
     await this.discord.channels.fetch(channelSnowflake);
     const channel = this.discord.channels.cache.get(channelSnowflake);
     if (!channel) throw new NotFoundError();
-    if (!channel.isText()) throw new NotFoundError();
+    if (!channel.isTextBased()) throw new NotFoundError();
 
     await channel.send(message);
   }
@@ -100,7 +107,7 @@ export class BotService implements IBotService {
     await this.discord.channels.fetch(channelSnowflake);
     const channel = this.discord.channels.cache.get(channelSnowflake);
     if (!channel) throw new NotFoundError();
-    if (!channel.isText()) throw new NotFoundError();
+    if (!channel.isTextBased()) throw new NotFoundError();
 
     const messageSent = await channel.send(message);
     try {

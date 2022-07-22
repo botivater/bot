@@ -56,7 +56,7 @@ export class BirthdayService {
           dbGuildMember.guild.guildConfig.announcementChannelId,
         );
         if (!discordGuildChannel) throw new Error('Guild channel not found');
-        if (!discordGuildChannel.isText())
+        if (!discordGuildChannel.isTextBased())
           throw new Error('Guild channel is not a text channel');
 
         const options = [
