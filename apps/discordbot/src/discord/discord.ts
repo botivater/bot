@@ -25,6 +25,7 @@ export class Discord extends Client {
         GatewayIntentBits.DirectMessageReactions,
         GatewayIntentBits.DirectMessageTyping,
         GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.MessageContent,
       ],
       partials: [Partials.Message, Partials.Channel, Partials.Reaction],
     });
