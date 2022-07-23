@@ -714,9 +714,9 @@
     uuid "8.3.2"
 
 "@nestjs/config@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-2.1.0.tgz#334d6c3211f288eb40b1f8e2dbfbaf50b538f300"
-  integrity sha512-wUpt1/QJEN7xnJl4pM3c9rHrY1widq2yPOZfjaMD1//XAP9LLHTaW+RxSEG6BSGIm3w4wGtjco+gKNB2WL7yRg==
+  version "2.2.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/config/-/config-2.2.0.tgz#9f3da35f7c4a58724c0a0817d6f04b66e6703430"
+  integrity sha512-78Eg6oMbCy3D/YvqeiGBTOWei1Jwi3f2pSIZcZ1QxY67kYsJzTRTkwRT8Iv30DbK0sGKc1mcloDLD5UXgZAZtg==
   dependencies:
     dotenv "16.0.1"
     dotenv-expand "8.0.3"
@@ -744,7 +744,12 @@
     "@types/jsonwebtoken" "8.5.8"
     jsonwebtoken "8.5.1"
 
-"@nestjs/mapped-types@*", "@nestjs/mapped-types@1.0.1":
+"@nestjs/mapped-types@*":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-1.1.0.tgz#54a9fa61079635dd6c3c75fd9593f20b2302a55b"
+  integrity sha512-+2kSly4P1QI+9eGt+/uGyPdEG1hVz7nbpqPHWZVYgoqz8eOHljpXPag+UCVRw9zo2XCu4sgNUIGe8Uk0+OvUQg==
+
+"@nestjs/mapped-types@1.0.1":
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-1.0.1.tgz#78b62041c7a407db4a90eb140567321602bed18e"
   integrity sha512-NFvofzSinp00j5rzUd4tf+xi9od6383iY0JP7o0Bnu1fuItAUkWBgc4EKuIQ3D+c2QI3i9pG1kDWAeY27EMGtg==
@@ -774,9 +779,9 @@
     tslib "2.4.0"
 
 "@nestjs/schedule@^2.0.1":
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-2.0.1.tgz#0f047e605c5c93fbc12be429b4d73dc322e58628"
-  integrity sha512-NqiCk3P7HDMw55kpefNIzAAQEsP+6dDIXUt4/KQANtAZ+opdLzo8rkzI0j8vDqgYeTh+PKq+V6zwSRjR61xPAQ==
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/schedule/-/schedule-2.1.0.tgz#a2e21b2078a0c3d56552d40cc97336aa5bbfecdf"
+  integrity sha512-4Xaw56WiW3VsxEPPnj/iDtfjcO+sUZyYAeRxD0gnF5havncxjAnv52Iw7UH3DuzzUA784xPGgGje3Fq0Gu925g==
   dependencies:
     cron "2.0.0"
     uuid "8.3.2"
@@ -802,9 +807,9 @@
     path-to-regexp "3.2.0"
 
 "@nestjs/terminus@^8.0.6":
-  version "8.1.0"
-  resolved "https://registry.yarnpkg.com/@nestjs/terminus/-/terminus-8.1.0.tgz#8b1d44af925be856c1a5662af1e8e0a48de18a77"
-  integrity sha512-ZX+0zFYwJSs+ArszxJnYB0ESUnp266UthfOGkLfCBQpYA9nNmHTUHjAju6Mr9JzeL4Iv4W1phhkSyaLxNR2a8A==
+  version "8.1.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/terminus/-/terminus-8.1.1.tgz#21a7c1a543224ebfef00d161efdf22e390376301"
+  integrity sha512-C+Pm1LZse8ZSfXeZXMTmUIGAmDpov1WRury/cyWj50ceCCCWz7csACNouGBEvjDmBklzfbkxgDH9mOSbm1r54A==
   dependencies:
     check-disk-space "3.3.0"
 
@@ -1101,9 +1106,9 @@
   integrity sha512-YATxVxgRqNH6nHEIsvg6k2Boc1JHI9ZbH5iWFFv/MTkchz3b1ieGDa5T0a9RznNdI0KhVbdbWSN+KWWrQZRxTw==
 
 "@types/node@*":
-  version "18.0.1"
-  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.0.1.tgz#e91bd73239b338557a84d1f67f7b9e0f25643870"
-  integrity sha512-CmR8+Tsy95hhwtZBKJBs0/FFq4XX7sDZHlGGf+0q+BRZfMbOTkzkj0AFAuTyXbObDIoanaBBW0+KEW+m3N16Wg==
+  version "18.0.6"
+  resolved "https://registry.yarnpkg.com/@types/node/-/node-18.0.6.tgz#0ba49ac517ad69abe7a1508bc9b3a5483df9d5d7"
+  integrity sha512-/xUq6H2aQm261exT6iZTMifUySEt4GR5KX8eYyY+C4MSNPqSh9oNIP7tz2GLKTlFaiBbgZNxffoR3CVRG+cljw==
 
 "@types/node@^16.0.0":
   version "16.11.38"
@@ -1553,7 +1558,7 @@ ansi-styles@^3.2.1:
 
 ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   version "4.3.0"
-  resolved "https://registry.npmjs.org/ansi-styles/-/ansi-styles-4.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-4.3.0.tgz#edd803628ae71c04c85ae7a0906edad34b648937"
   integrity sha512-zbB9rCJAT1rbjiVDb2hqKFHNYLxgtk8NURxZ3IZwD3F6NtxbXZQCnnSi1Lkx+IDohdPlFp222wVALIheZJQSEg==
   dependencies:
     color-convert "^2.0.1"
