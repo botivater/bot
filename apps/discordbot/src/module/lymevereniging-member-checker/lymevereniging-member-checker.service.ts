@@ -1,14 +1,17 @@
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { ClientProxy } from '@nestjs/microservices';
 import discord, {
-  MessageActionRow,
-  MessageButton,
-  Modal,
-  TextInputComponent,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  ChannelType,
+  ModalActionRowComponentBuilder,
+  ModalBuilder,
+  TextInputBuilder,
+  TextInputStyle,
 } from 'discord.js';
 import { SendVerificationMessageDto } from './dto/send-verification-message.dto';
 import { Discord } from '../../discord/discord';
-import { MessageButtonStyles, TextInputStyles } from 'discord.js/typings/enums';
 import * as yup from 'yup';
 import { LymeverenigingMemberCheckerMessagePattern } from '@common/common/apps/lymevereniging-member-checker/enum/LymeverenigingMemberCheckerMessagePattern.enum';
 import { CheckMemberStatusCode } from '@common/common/apps/lymevereniging-member-checker/enum/check-member-status-code';
@@ -81,15 +84,14 @@ export class LymeverenigingMemberCheckerService {
   async sendVerificationMessage(
     sendVerificationMessageDto: SendVerificationMessageDto,
   ) {
-    const messageActionRow = new MessageActionRow();
-
-    const messageButton = new MessageButton()
+    const messageButton = new ButtonBuilder()
       .setCustomId(this.verificationButtonUuid)
-      .setLabel('Verifieer nu!')
-      .setStyle(MessageButtonStyles.PRIMARY)
+      .setLabel('Klik hier')
+      .setStyle(ButtonStyle.Primary)
       .setEmoji('✅');
 
-    messageActionRow.addComponents(messageButton);
+    const messageActionRow =
+      new ActionRowBuilder<ButtonBuilder>().addComponents(messageButton);
 
     await this.discord.channels.fetch(
       sendVerificationMessageDto.channelSnowflake,
@@ -100,10 +102,11 @@ export class LymeverenigingMemberCheckerService {
     );
 
     if (!guildChannel) throw new ChannelNotFoundError();
-    if (!guildChannel.isText()) throw new ChannelNotTextChannelError();
+    if (guildChannel.type !== ChannelType.GuildText)
+      throw new ChannelNotTextChannelError();
 
     await guildChannel.send({
-      content: `Hey daar! Verifieer jouw lidmaatschap alstublieft.`,
+      content: `Hallo! Lymevereniging Online Community is alleen beschikbaar voor leden van de Lymevereniging en hun huishouden. Klik op onderstaande knop om te laten zien dat je lid bent en krijg daarna toegang tot de gehele community.`,
       components: [messageActionRow],
     });
   }
@@ -137,20 +140,22 @@ export class LymeverenigingMemberCheckerService {
   private async respondToVerifyButton(
     interaction: discord.ButtonInteraction<discord.CacheType>,
   ) {
-    const modal = new Modal()
+    const modal = new ModalBuilder()
       .setCustomId(this.verificationModalUuid)
       .setTitle('Lidmaatschap verifiëren');
 
-    const emailInput = new TextInputComponent()
+    const emailInput = new TextInputBuilder()
       .setCustomId(this.verificationModalEmailInputUuid)
       .setLabel('Email adres')
-      .setPlaceholder('Email adres waarmee je geregistreerd staat')
+      .setPlaceholder('Email adres waarmee je geregistreerd staat.')
       .setRequired(true)
-      .setStyle(TextInputStyles.SHORT)
+      .setStyle(TextInputStyle.Short)
       .setMaxLength(255);
 
     const firstActionRow =
-      new MessageActionRow<TextInputComponent>().addComponents(emailInput);
+      new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+        emailInput,
+      );
 
     modal.addComponents(firstActionRow);
 
@@ -160,21 +165,23 @@ export class LymeverenigingMemberCheckerService {
   private async respondToEmailVerifyButton(
     interaction: discord.ButtonInteraction<discord.CacheType>,
   ) {
-    const modal = new Modal()
+    const modal = new ModalBuilder()
       .setCustomId(this.emailVerificationModalUuid)
-      .setTitle('Email adres verifiëren');
+      .setTitle('Aanmeld code');
 
-    const emailInput = new TextInputComponent()
+    const emailInput = new TextInputBuilder()
       .setCustomId(this.emailVerificationModalCodeInputUuid)
-      .setLabel('Verificatie code')
-      .setPlaceholder('123456')
+      .setLabel('Aanmeld code')
+      .setPlaceholder('1234 5678')
       .setRequired(true)
-      .setStyle(TextInputStyles.SHORT)
-      .setMinLength(6)
-      .setMaxLength(6);
+      .setStyle(TextInputStyle.Short)
+      .setMinLength(9)
+      .setMaxLength(9);
 
     const firstActionRow =
-      new MessageActionRow<TextInputComponent>().addComponents(emailInput);
+      new ActionRowBuilder<ModalActionRowComponentBuilder>().addComponents(
+        emailInput,
+      );
 
     modal.addComponents(firstActionRow);
 
@@ -243,18 +250,17 @@ export class LymeverenigingMemberCheckerService {
         lymeverenigingGuildMember,
       );
 
-      const messageActionRow = new MessageActionRow();
-
-      const messageButton = new MessageButton()
+      const messageButton = new ButtonBuilder()
         .setCustomId(this.emailVerificationButtonUuid)
-        .setLabel('Verifieer email adres met code!')
-        .setStyle(MessageButtonStyles.PRIMARY)
+        .setLabel('Aanmeld code')
+        .setStyle(ButtonStyle.Primary)
         .setEmoji('👋');
 
-      messageActionRow.addComponents(messageButton);
+      const messageActionRow =
+        new ActionRowBuilder<ButtonBuilder>().addComponents(messageButton);
 
-      const randomNumber = randomInt(0, 1000000);
-      const verificationCode = randomNumber.toString().padStart(6, '0');
+      const randomNumber = randomInt(0, 100000000);
+      const verificationCode = randomNumber.toString().padStart(8, '0');
 
       const guild = await this.guildRepository.findOne({
         where: {
@@ -294,7 +300,10 @@ export class LymeverenigingMemberCheckerService {
 
       const renderObject = {
         fullName: discordGuildMember.displayName,
-        verificationCode,
+        verificationCode: `${verificationCode.slice(
+          0,
+          4,
+        )} ${verificationCode.slice(4, 8)}`,
       };
 
       const renderedHtml = render(htmlFile, renderObject);
@@ -313,7 +322,7 @@ export class LymeverenigingMemberCheckerService {
             {
               tenantId: guild.tenantId,
               to: [emailInput],
-              subject: 'Email verifiëren',
+              subject: 'Lymevereniging aanmeld code',
               body: renderedText,
               bodyHtml: renderedHtml,
               verification: {
@@ -330,24 +339,25 @@ export class LymeverenigingMemberCheckerService {
       });
 
       await interaction.editReply({
-        content: `We hebben geverifieerd dat jij lid bent van de Lymevereniging! Bedankt!\nNu volgt er nog 1 stap voor je toegang krijgt tot de server. Er is een email gestuurd met een code om je email adres te verifieren, deze dien je hier in te vullen.`,
+        content: `We hebben een code gestuurd naar het email adres wat je opgegeven hebt. Klik hieronder om die code in te vullen.`,
         components: [messageActionRow],
       });
     } catch (err) {
       if (err instanceof VerificationModalInvalidEmailError) {
         await interaction.editReply({
-          content: 'Oeps, dat is geen geldig email adres. Probeer het opnieuw.',
+          content:
+            'Dit is geen geldig email adres. Heb je misschien een typfout gemaakt?',
         });
       } else if (err instanceof VerificationModalNotAMemberError) {
         await interaction.editReply({
           content:
-            'Wij konden jouw lidmaatschap niet verifiëren. Probeer opnieuw, of neem contact op met iemand. Het kan ook zijn dat jouw lidmaatschap verlopen is.',
+            'Dit email adres is niet geregistreerd bij de Lymeverenging. Stuur een mail naar ledenadministratie@lymevereniging.nl om na te vragen met welk email adres jouw huishouden geregistreerd staat.',
         });
       } else {
         this.logger.error(err);
         await interaction.editReply({
           content:
-            'Er is een intern probleem opgetreden! Gelieve contact op te nemen met Jonas Claes.',
+            'Er is een probleem opgetreden. Neem contact met ons op via jonas+lymevereniging@jonasclaes.be.',
         });
       }
     }
@@ -360,9 +370,10 @@ export class LymeverenigingMemberCheckerService {
 
     const codeInput = interaction.fields
       .getTextInputValue(this.emailVerificationModalCodeInputUuid)
-      .trim();
+      .trim()
+      .replace(' ', '');
 
-    const validationSchema = yup.string().max(6).min(6).required();
+    const validationSchema = yup.string().max(8).min(8).required();
     const isValid = await validationSchema.isValid(codeInput);
 
     try {
@@ -422,14 +433,16 @@ export class LymeverenigingMemberCheckerService {
           type: FeatureType.LYMEVERENIGING_MEMBER_CHECKER,
         },
       });
-      if (!feature) return;
+      if (!feature)
+        throw new Error('This feature is not enabled on this server.');
 
       const featureConfig = await this.featureConfigRepository.findOne({
         where: {
           featureId: feature.id,
         },
       });
-      if (!featureConfig) return;
+      if (!featureConfig)
+        throw new Error('This feature is not configured on this server.');
 
       const config =
         featureConfig.config as LymeverenigingMemberCheckerFeatureConfigDto;
@@ -459,7 +472,7 @@ export class LymeverenigingMemberCheckerService {
       );
 
       await interaction.editReply({
-        content: `We hebben jouw email adres geverifieerd! Bedankt! Je krijgt binnen enkele seconden toegang tot de server!`,
+        content: `Het aanmelden is gelukt! Je krijgt binnen enkele seconden toegang tot de Lymevereniging Online Community.`,
       });
 
       await interaction.guild.members.fetch(interaction.user.id);
@@ -481,7 +494,7 @@ export class LymeverenigingMemberCheckerService {
         this.logger.error(err);
         await interaction.editReply({
           content:
-            'Er is een intern probleem opgetreden! Gelieve contact op te nemen met Jonas Claes.',
+            'Er is een probleem opgetreden. Neem contact met ons op via jonas+lymevereniging@jonasclaes.be.',
         });
       }
     }
@@ -582,7 +595,7 @@ export class LymeverenigingMemberCheckerService {
     await discordGuildMember.send({
       content: `Hey ${userMention(
         discordGuildMember.id,
-      )}! Onze systemen hebben geconcludeerd dat jij niet meer lid bent van de Lymevereniging, jammer! Met deze nieuwe status hebben wij automatisch jouw toegang tot de Lymevereniging Discord server verwijderd.`,
+      )}. We hebben je meerdere keren proberen te contacteren dat je lidmaatschap verlopen is. Omdat je je lidmaatschap niet vernieuwd hebt, hebben we helaas je toegang tot de Lymevereniging Online Community moeten intrekken. Opnieuw lid worden van de Lymevereniging kan via https://lymevereniging.nl/lidmaatschap/, daarna kan je je opnieuw aanmelden voor de Lymevereniging Online Community. Misschien tot ziens!`,
     });
     await discordGuildMember.roles.remove(config.roleSnowflake);
   }

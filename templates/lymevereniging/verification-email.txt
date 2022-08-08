@@ -1,13 +1,12 @@
-Lymevereniging Discord Server
-Hey <%= fullName %>!
+Lymevereniging Online Community
 
-Bedankt om jezelf aan te melden bij de Lymevereniging Discord Server!
+Hey <%= fullName %>
 
-Om onze server en onze leden te beschermen, vragen wij ieder van onze leden zich te verifieren aan de hand van een email adres. Om jouw verificatie af te ronden, dien je onderstaande code door te geven via Discord.
+Wat leuk dat je lid wilt worden van de Lymevereniging Online Community!
+
+Vul onderstaande code in bij de Lymevereniging Online Community en je krijgt toegang tot de gehele server.
 
 Jouw verificatiecode is: <%= verificationCode %>
 
-Met vriendelijke groeten
-Lymevereniging Discord Server Team
-
-Ervaar je problemen tijdens het verifieren? Contacteer dan zeker iemand van ons moderatie team!
+Met vriendelijke groet,
+Het Lymevereniging Online Community Team

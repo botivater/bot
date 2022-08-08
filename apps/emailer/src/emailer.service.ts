@@ -97,7 +97,7 @@ export class EmailerService {
 
       const tUtc = moment.utc();
       const tSaved = moment(emailVerification.createdAt);
-      if (tUtc.diff(tSaved, 'hours') >= 1) {
+      if (tUtc.diff(tSaved, 'hours') >= 24) {
         throw new Error('Verification expired');
       }
 

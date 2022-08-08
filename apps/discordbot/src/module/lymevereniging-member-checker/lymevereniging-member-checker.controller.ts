@@ -18,7 +18,6 @@ export class LymeverenigingMemberCheckerController {
     this.logger.debug('LymeverenigingMemberCheckerController initialized');
     // this.sendVerificationMessage({
     //   channelSnowflake: '995777397876068473',
-    //   type: 'channel',
     // });
   }
 
