@@ -9,7 +9,9 @@ describe('AskAnonymouslyCommandService', () => {
       providers: [AskAnonymouslyCommandService],
     }).compile();
 
-    service = module.get<AskAnonymouslyCommandService>(AskAnonymouslyCommandService);
+    service = module.get<AskAnonymouslyCommandService>(
+      AskAnonymouslyCommandService,
+    );
   });
 
   it('should be defined', () => {

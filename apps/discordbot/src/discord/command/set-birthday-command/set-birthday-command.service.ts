@@ -2,7 +2,12 @@ import { GuildMember } from '@common/common/guildMember/guildMember.entity';
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CommandInteraction, CacheType } from 'discord.js';
+import {
+  CommandInteraction,
+  CacheType,
+  InteractionType,
+  ChatInputCommandInteraction,
+} from 'discord.js';
 import { Repository } from 'typeorm';
 import { Command } from '../command';
 
@@ -119,7 +124,7 @@ export class SetBirthdayCommandService extends Command {
   }
 
   public async handleCommand(
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 

@@ -3,7 +3,7 @@ import { GuildConfig } from '@common/common/guildConfig/guildConfig.entity';
 import { GuildMember } from '@common/common/guildMember/guildMember.entity';
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import discord from 'discord.js';
+import discord, { ChannelType } from 'discord.js';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -32,8 +32,9 @@ export class SyncProvider {
     newGuild.snowflake = guild.id;
     newGuild.name = guild.name;
     newGuild.guildConfig = new GuildConfig();
-    const guildChannel = await guild.channels.create('system', {
-      type: 'GUILD_TEXT',
+    const guildChannel = await guild.channels.create({
+      type: ChannelType.GuildText,
+      name: 'system',
     });
     newGuild.guildConfig.systemChannelId = guildChannel.id;
     await this.guildRepository.save(newGuild);

@@ -7,7 +7,11 @@ import {
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
-import { CommandInteraction, CacheType } from 'discord.js';
+import {
+  CommandInteraction,
+  CacheType,
+  ChatInputCommandInteraction,
+} from 'discord.js';
 import { Repository, In } from 'typeorm';
 import { Command } from '../command';
 
@@ -48,7 +52,7 @@ export class CoupleLoginService extends Command {
   }
 
   public async handleCommand(
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({
       ephemeral: true,

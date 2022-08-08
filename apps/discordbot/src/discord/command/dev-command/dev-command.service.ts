@@ -1,6 +1,10 @@
 import { SlashCommandBuilder } from '@discordjs/builders';
 import { Injectable } from '@nestjs/common';
-import { CommandInteraction, CacheType } from 'discord.js';
+import {
+  CommandInteraction,
+  CacheType,
+  ChatInputCommandInteraction,
+} from 'discord.js';
 import { Command } from '../command';
 
 @Injectable()
@@ -15,7 +19,7 @@ export class DevCommandService extends Command {
   }
 
   public async handleCommand(
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply();
 

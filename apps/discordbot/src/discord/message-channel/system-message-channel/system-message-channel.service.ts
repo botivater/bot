@@ -1,5 +1,6 @@
 import { Guild } from '@common/common/guild/guild.entity';
 import { Injectable, Logger } from '@nestjs/common';
+import { ChannelType } from 'discord.js';
 import { Discord } from '../../discord';
 import { MessageChannel } from '../message-channel.interface';
 
@@ -25,8 +26,9 @@ export class SystemMessageChannelService implements MessageChannel {
         guild.guildConfig.systemChannelId,
       );
       if (!discordChannel) throw new Error('Discord guild channel not found');
-      if (!discordChannel.isText())
+      if (discordChannel.type !== ChannelType.GuildText) {
         throw new Error('Discord guild channel is not a text channel');
+      }
 
       await discordChannel.send({
         content: message,

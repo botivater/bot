@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Discord } from '../../discord';
-import discord, { GuildMember } from 'discord.js';
+import discord, { GuildMember, InteractionType } from 'discord.js';
 import { CommandService } from '../../command/command.service';
 import { SyncProvider } from '../../sync-provider';
 
@@ -34,11 +34,11 @@ export class InteractionCreateEventService {
       }
     }
 
-    if (interaction.isCommand()) {
+    if (interaction.type === InteractionType.ApplicationCommand) {
       this.commandService.executeCommand(interaction);
     }
 
-    if (interaction.isModalSubmit()) {
+    if (interaction.type === InteractionType.ModalSubmit) {
       this.commandService.executeModalSubmit(interaction);
     }
   }

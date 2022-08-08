@@ -3,7 +3,13 @@ import {
   SlashCommandStringOption,
 } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
-import { CacheType, CommandInteraction } from 'discord.js';
+import {
+  ApplicationCommandType,
+  CacheType,
+  ChatInputCommandInteraction,
+  CommandInteraction,
+  InteractionType,
+} from 'discord.js';
 import { Command } from '../command';
 
 @Injectable()
@@ -38,7 +44,7 @@ export class AskAnonymouslyCommandService extends Command {
   }
 
   public async handleCommand(
-    interaction: CommandInteraction<CacheType>,
+    interaction: ChatInputCommandInteraction<CacheType>,
   ): Promise<void> {
     await interaction.deferReply({ ephemeral: true });
 

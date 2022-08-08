@@ -1,6 +1,6 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { Discord } from '../../discord';
-import discord from 'discord.js';
+import discord, { ChannelType } from 'discord.js';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Guild } from '@common/common/guild/guild.entity';
 import { Repository } from 'typeorm';
@@ -31,8 +31,9 @@ export class GuildCreateEventService {
     newGuild.snowflake = discordGuild.id;
     newGuild.name = discordGuild.name;
     newGuild.guildConfig = new GuildConfig();
-    const guildChannel = await discordGuild.channels.create('system', {
-      type: 'GUILD_TEXT',
+    const guildChannel = await discordGuild.channels.create({
+      type: ChannelType.GuildText,
+      name: 'system',
     });
     newGuild.guildConfig.systemChannelId = guildChannel.id;
     await this.guildRepository.save(newGuild);

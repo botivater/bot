@@ -4,6 +4,7 @@ import { bold, userMention } from '@discordjs/builders';
 import { Injectable, Logger } from '@nestjs/common';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { InjectRepository } from '@nestjs/typeorm';
+import { ChannelType } from 'discord.js';
 import { LessThanOrEqual, Repository } from 'typeorm';
 import { Discord } from '../discord';
 
@@ -85,7 +86,7 @@ export class InactiveUserService {
             return;
           }
 
-          if (!guildChannel.isText()) {
+          if (guildChannel.type !== ChannelType.GuildText) {
             this.logger.error('Guild channel not a text channel');
             return;
           }
