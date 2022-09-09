@@ -105,6 +105,7 @@ export class CommandService {
       if (command) {
         const setupCommand = command.setup();
         setupCommand.setName(commandAlias.commandName);
+        setupCommand.setNameLocalization('nl', commandAlias.commandName);
 
         restCommandArray.push(setupCommand.toJSON());
       }
