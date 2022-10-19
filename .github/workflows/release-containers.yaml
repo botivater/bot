@@ -11,7 +11,7 @@ jobs:
   docker:
     strategy:
       matrix:
-        application: ['discordbot', 'api', 'emailer', 'lymevereniging-member-checker']
+        application: ['discordbot', 'api', 'emailer']
 #     runs-on: self-hosted
     runs-on: ubuntu-latest
     steps:
