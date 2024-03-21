@@ -13,7 +13,7 @@ export class ToneIndicatorCommandService extends Command {
 
   public setup(): SlashCommandBuilder {
     return new SlashCommandBuilder()
-      .setName('toneindicator')
+      .setName(this.COMMAND_NAME)
       .setDescription('Toon de lijst met tone indicators.')
       .setDefaultPermission(true);
   }

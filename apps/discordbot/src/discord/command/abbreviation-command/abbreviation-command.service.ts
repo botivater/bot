@@ -13,7 +13,7 @@ export class AbbreviationCommandService extends Command {
 
   public setup(): SlashCommandBuilder {
     return new SlashCommandBuilder()
-      .setName('abbreviation')
+      .setName(this.COMMAND_NAME)
       .setDescription('Toon de lijst met afkortingen.')
       .setDefaultPermission(true);
   }
