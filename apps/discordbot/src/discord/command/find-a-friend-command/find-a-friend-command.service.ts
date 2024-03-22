@@ -25,7 +25,7 @@ export class FindAFriendCommandService extends Command {
     'Wie dit is? Mijn BFF natuurlijk!',
     '#vrienden #gezellig #bff #squadgoals',
   ];
-  private readonly amount = 293;
+  private readonly amount = 1040;
 
   public COMMAND_NAME = 'vindeenvriendje';
 
