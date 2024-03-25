@@ -18,6 +18,7 @@ import { PingCommandService } from './command/ping-command/ping-command.service'
 import { CommandList } from '@common/common/commandList/commandList.entity';
 import { DevCommandService } from './command/dev-command/dev-command.service';
 import { ToneIndicatorCommandService } from './command/tone-indicator-command/tone-indicator-command.service';
+import { AbbreviationCommandService } from './command/abbreviation-command/abbreviation-command.service';
 import { FindAFriendCommandService } from './command/find-a-friend-command/find-a-friend-command.service';
 import { HelpCommandService } from './command/help-command/help-command.service';
 import { SetBirthdayCommandService } from './command/set-birthday-command/set-birthday-command.service';
@@ -106,6 +107,7 @@ const discordFactory: Provider = {
     PingCommandService,
     DevCommandService,
     ToneIndicatorCommandService,
+    AbbreviationCommandService,
     FindAFriendCommandService,
     HelpCommandService,
     SetBirthdayCommandService,

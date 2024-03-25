@@ -8,13 +8,13 @@ import {
 import { Command } from '../command';
 
 @Injectable()
-export class ToneIndicatorCommandService extends Command {
-  public COMMAND_NAME = 'toneindicator';
+export class AbbreviationCommandService extends Command {
+  public COMMAND_NAME = 'abbreviation';
 
   public setup(): SlashCommandBuilder {
     return new SlashCommandBuilder()
       .setName(this.COMMAND_NAME)
-      .setDescription('Toon de lijst met tone indicators.')
+      .setDescription('Toon de lijst met afkortingen.')
       .setDefaultPermission(true);
   }
 
@@ -25,7 +25,7 @@ export class ToneIndicatorCommandService extends Command {
 
     await interaction.editReply({
       files: [
-        'https://static.jonasclaes.be/botivater-resources/tone-indicator.jpg',
+        'https://static.jonasclaes.be/botivater-resources/afkortingen.jpg',
       ],
     });
   }

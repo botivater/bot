@@ -20,6 +20,7 @@ import { CommandList } from '@common/common/commandList/commandList.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DevCommandService } from './dev-command/dev-command.service';
 import { ToneIndicatorCommandService } from './tone-indicator-command/tone-indicator-command.service';
+import { AbbreviationCommandService } from './abbreviation-command/abbreviation-command.service';
 import { FindAFriendCommandService } from './find-a-friend-command/find-a-friend-command.service';
 import { HelpCommandService } from './help-command/help-command.service';
 import { SetBirthdayCommandService } from './set-birthday-command/set-birthday-command.service';
@@ -53,6 +54,7 @@ export class CommandService {
     private readonly pingCommandService: PingCommandService,
     private readonly devCommandService: DevCommandService,
     private readonly toneIndicatorCommandService: ToneIndicatorCommandService,
+    private readonly abbreviationCommandService: AbbreviationCommandService,
     private readonly findAFriendCommandService: FindAFriendCommandService,
     private readonly helpCommandService: HelpCommandService,
     private readonly setBirthdayCommandService: SetBirthdayCommandService,
@@ -72,6 +74,7 @@ export class CommandService {
     this.commandArray.push(this.pingCommandService);
     this.commandArray.push(this.devCommandService);
     this.commandArray.push(this.toneIndicatorCommandService);
+    this.commandArray.push(this.abbreviationCommandService);
     this.commandArray.push(this.findAFriendCommandService);
     this.commandArray.push(this.helpCommandService);
     this.commandArray.push(this.setBirthdayCommandService);
