@@ -3,7 +3,7 @@
 # allows to build the application in a "builder" stage
 # and then create a lightweight production image
 # containing the required dependencies and the JS build files.
-FROM node:16-alpine as builder
+FROM node:20-alpine as builder
 
 ARG APP bot
 
@@ -26,7 +26,7 @@ RUN yarn build $APP && yarn install --frozen-lockfile --production
 
 # ---
 
-FROM node:16-alpine
+FROM node:20-alpine
 
 ARG APP bot
 ENV APP $APP
