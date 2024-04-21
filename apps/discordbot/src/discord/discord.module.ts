@@ -53,10 +53,7 @@ import { ChannelDeleteEventService } from './event/channel-delete-event/channel-
 import { Message } from '@common/common/message/message.entity';
 import { MessageUpdateEventService } from './event/message-update-event/message-update-event.service';
 import { MessageDeleteEventService } from './event/message-delete-event/message-delete-event.service';
-import { QAndAService } from './command/q-and-a/q-and-a.service';
-import { AskAiService } from './command/ask-ai/ask-ai.service';
 import { CommandAlias } from '@common/common/commandAlias/commandAlias.entity';
-import { ChatAiReplyService } from './command/chat-ai-reply/chat-ai-reply.service';
 import { OpenAIUsage } from '@common/common/openAIUsage/openAIUsage.entity';
 import { GuildMemberRemoveEventService } from './event/guild-member-remove-event/guild-member-remove-event.service';
 import { AskAnonymouslyCommandService } from './command/ask-anonymously-command/ask-anonymously-command.service';
@@ -132,9 +129,6 @@ const discordFactory: Provider = {
     ChannelDeleteEventService,
     MessageUpdateEventService,
     MessageDeleteEventService,
-    QAndAService,
-    AskAiService,
-    ChatAiReplyService,
     GuildMemberRemoveEventService,
     AskAnonymouslyCommandService,
     MessageDeleteBulkEventService,

@@ -8,9 +8,7 @@
     "webpack": true,
     "tsConfigPath": "apps/bot/tsconfig.app.json",
     "watchAssets": true,
-    "plugins": [
-      "@nestjs/swagger/plugin"
-    ]
+    "plugins": ["@nestjs/swagger/plugin"]
   },
   "projects": {
     "bot": {
@@ -56,15 +54,6 @@
       "sourceRoot": "apps/emailer/src",
       "compilerOptions": {
         "tsConfigPath": "apps/emailer/tsconfig.app.json"
-      }
-    },
-    "lymevereniging-member-checker": {
-      "type": "application",
-      "root": "apps/lymevereniging-member-checker",
-      "entryFile": "main",
-      "sourceRoot": "apps/lymevereniging-member-checker/src",
-      "compilerOptions": {
-        "tsConfigPath": "apps/lymevereniging-member-checker/tsconfig.app.json"
       }
     }
   }

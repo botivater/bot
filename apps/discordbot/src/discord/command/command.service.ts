@@ -29,10 +29,7 @@ import { GenerateLoginService } from './generate-login/generate-login.service';
 import { CoupleLoginService } from './couple-login/couple-login.service';
 import { LogUsageService } from '../log-usage/log-usage.service';
 import { Guild } from '@common/common/guild/guild.entity';
-import { QAndAService } from './q-and-a/q-and-a.service';
-import { AskAiService } from './ask-ai/ask-ai.service';
 import { CommandAlias } from '@common/common/commandAlias/commandAlias.entity';
-import { ChatAiReplyService } from './chat-ai-reply/chat-ai-reply.service';
 import { AskAnonymouslyCommandService } from './ask-anonymously-command/ask-anonymously-command.service';
 
 @Injectable()
@@ -61,9 +58,6 @@ export class CommandService {
     private readonly reportCommandService: ReportCommandService,
     private readonly generateLoginService: GenerateLoginService,
     private readonly coupleLoginService: CoupleLoginService,
-    private readonly qAndAService: QAndAService,
-    private readonly askAiService: AskAiService,
-    private readonly chatAiReplyService: ChatAiReplyService,
     private readonly askAnonymouslyCommandService: AskAnonymouslyCommandService,
     private readonly logUsageService: LogUsageService,
   ) {
@@ -81,9 +75,6 @@ export class CommandService {
     this.commandArray.push(this.reportCommandService);
     this.commandArray.push(this.generateLoginService);
     this.commandArray.push(this.coupleLoginService);
-    this.commandArray.push(this.qAndAService);
-    this.commandArray.push(this.askAiService);
-    this.commandArray.push(this.chatAiReplyService);
     this.commandArray.push(this.askAnonymouslyCommandService);
   }
 
