@@ -16,10 +16,10 @@ export class PronounChecker {
   public static checkString(string = ''): boolean {
     const pronouns = PronounChecker.getPronouns(string);
 
-    if (pronouns.length == 0){
-      return false; 
+    if (pronouns.length == 0) {
+      return false;
     }
-    
+
     for (const pronoun of pronouns) {
       if (!this.validPronouns.find((validPronoun) => validPronoun === pronoun))
         return false;
