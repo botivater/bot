@@ -41,6 +41,25 @@ export class BotService implements IBotService {
   }
 
   async getGuildChannels(id: number): Promise<GuildChannel[]> {
+    const convertGuildChannelType = (
+      channelType:
+        | ChannelType.GuildText
+        | ChannelType.GuildVoice
+        | ChannelType.GuildCategory
+        | ChannelType.GuildAnnouncement
+        | ChannelType.AnnouncementThread
+        | ChannelType.PublicThread
+        | ChannelType.PrivateThread
+        | ChannelType.GuildStageVoice
+        | ChannelType.GuildForum
+        | ChannelType.GuildMedia,
+    ): string => {
+      if (channelType === ChannelType.GuildText) return 'GuildText';
+      if (channelType === ChannelType.GuildVoice) return 'GuildVoice';
+
+      return channelType.toString();
+    };
+
     const guild = await this.guildRepository.findOneBy({ id });
     if (!guild) throw new NotFoundError();
     await this.discord.guilds.fetch(guild.snowflake);
@@ -54,8 +73,7 @@ export class BotService implements IBotService {
       .map((channel) => ({
         id: channel.id,
         name: channel.name,
-        type:
-          channel.type === ChannelType.GuildText ? 'GUILD_TEXT' : 'GUILD_VOICE',
+        type: convertGuildChannelType(channel.type),
       }));
 
     return channels;
