@@ -25,7 +25,7 @@ export class ToneIndicatorCommandService extends Command {
 
     await interaction.editReply({
       files: [
-        'https://static.jonasclaes.be/botivater-resources/tone-indicator.jpg',
+        `${this.configService.get('STATIC_URL',)}/misc/tone-indicator-2.jpg`,
       ],
     });
   }
