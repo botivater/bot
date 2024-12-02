@@ -53,7 +53,7 @@ export class FindAFriendCommandService extends Command {
       await interaction.editReply({
         content: randomText,
         files: [
-          `https://static.friendshipbubble.nl/mira/pets/${randomNumber}.jpg`,
+          `${this.configService.get('STATIC_URL',)}/pets/${randomNumber}.jpg`,
         ],
       });
     } catch (err) {
